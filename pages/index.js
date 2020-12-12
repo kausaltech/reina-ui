@@ -1,9 +1,12 @@
 import Head from 'next/head';
+import { useTranslation } from '../i18n';
 import { Container, Row, Col } from 'reactstrap';
 import Layout from 'components/Layout';
 import KeyIndicator from 'components/content/KeyIndicator';
 
 export default function Home() {
+  const { t, i18n } = useTranslation(['common']);
+
   return (
     <Layout>
       <Head>
@@ -13,23 +16,23 @@ export default function Home() {
         <Row className="mx-2">
           <Col md="4" className="px-2">
               <KeyIndicator
-                title="Restriction Day Index"
+                title={t("restriction-day-index")}
                 value="155"
-                info="The cumulative sum of daily percentages of mobility restrictions. The index can be used as a rough indicator of harmful psychological, social and economic effects. A higher index means more severe effects."
+                info={t("restriction-day-index-info")}
               />
           </Col>
           <Col md="4" className="px-2">
               <KeyIndicator
-                title="Restriction Day Index"
+                title={t("restriction-day-index")}
                 value="155"
-                info="The cumulative sum of daily percentages of mobility restrictions. The index can be used as a rough indicator of harmful psychological, social and economic effects. A higher index means more severe effects."
+                info={t("restriction-day-index-info")}
               />
           </Col>
           <Col md="4" className="px-2">
               <KeyIndicator
-                title="Restriction Day Index"
+                title={t("restriction-day-index")}
                 value="155"
-                info="The cumulative sum of daily percentages of mobility restrictions. The index can be used as a rough indicator of harmful psychological, social and economic effects. A higher index means more severe effects."
+                info={t("restriction-day-index-info")}
               />
           </Col>
         </Row>
@@ -38,3 +41,7 @@ export default function Home() {
     </Layout>
   )
 }
+
+Home.getInitialProps = async () => ({
+  namespacesRequired: ['common'],
+})

@@ -1,5 +1,8 @@
+import { useContext } from 'react';
 import styled from 'styled-components';
-import { Nav, NavItem as BSNavItem, NavLink } from 'reactstrap';
+import { Nav, NavItem as BSNavItem, NavLink, Button } from 'reactstrap';
+import { i18n } from 'i18n';
+import { I18nContext } from 'next-i18next';
 
 const SideNav = styled.div`
   width: 240px;
@@ -34,6 +37,9 @@ const NavItem = styled(BSNavItem)`
 `;
 
 const SideBarNav = ({ children }) => {
+
+  const { i18n: { language } } = useContext(I18nContext);
+
   return (
     <SideNav>
       <SideHeader>
@@ -57,6 +63,22 @@ const SideBarNav = ({ children }) => {
           <NavLink href="#">About REINA</NavLink>
         </NavItem>
       </Nav>
+
+      <Button
+          onClick={() => i18n.changeLanguage('fi')}
+          color="link"
+          disabled={language==='fi'}
+        >
+          SUOMI
+      </Button>
+      |
+      <Button
+        onClick={() => i18n.changeLanguage('en')}
+        color="link"
+        disabled={language==='en'}
+      >
+        ENGLISH
+      </Button>
     </SideNav>
   );
 };
