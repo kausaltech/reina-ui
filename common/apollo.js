@@ -5,10 +5,15 @@ import { ApolloClient, HttpLink, InMemoryCache } from "@apollo/client";
 let apolloClient;
 
 function createApolloClient() {
+  let ssrMode = typeof window === "undefined";
+  let uri = (ssrMode ?
+             process.env.SERVER_GRAPHQL_ENDPOINT:
+             process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT);
+  // console.log("endpoint...", uri)
   return new ApolloClient({
-    ssrMode: typeof window === "undefined",
+    ssrMode: ssrMode,
     link: new HttpLink({
-      uri: process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT || 'http://localhost:5000/graphql',
+      uri: uri || 'http://localhost:5000/graphql',
     }),
     cache: new InMemoryCache(),
   });
