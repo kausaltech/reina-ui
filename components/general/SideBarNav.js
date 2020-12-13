@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import styled from 'styled-components';
-import { Nav, NavItem as BSNavItem, NavLink, Button } from 'reactstrap';
-import { i18n } from 'i18n';
+import { Nav, NavItem as BSNavItem, Button } from 'reactstrap';
+import { i18n, Link } from 'i18n';
 import { I18nContext } from 'next-i18next';
 
 const SideNav = styled.div`
@@ -27,7 +27,9 @@ const AppTitle = styled.h1`
 `;
 
 const NavItem = styled(BSNavItem)`
-  a {
+  > a {
+    display: block;
+    padding: 0.5rem 1rem;
     color: ${(props)=>props.theme.themeColors.light};
 
     &:hover {
@@ -48,19 +50,19 @@ const SideBarNav = ({ children }) => {
       </SideHeader>
       <Nav vertical>
         <NavItem>
-          <NavLink href="#" active>Scenario</NavLink>
+          <Link href="/" active>Scenario</Link>
         </NavItem>
         <NavItem>
-          <NavLink href="#">Events</NavLink>
+          <Link href="/events">Events</Link>
         </NavItem>
         <NavItem>
-          <NavLink href="#">Disease parameters</NavLink>
+          <Link href="#">Disease parameters</Link>
         </NavItem>
         <NavItem>
-          <NavLink href="#">Region</NavLink>
+          <Link href="#">Region</Link>
         </NavItem>
         <NavItem>
-          <NavLink href="#">About REINA</NavLink>
+          <Link href="#">About REINA</Link>
         </NavItem>
       </Nav>
 
