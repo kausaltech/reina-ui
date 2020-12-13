@@ -1,4 +1,5 @@
 import Head from 'next/head';
+import { gql, useQuery } from "@apollo/client";
 import { useTranslation } from '../i18n';
 import { Container, Row, Col } from 'reactstrap';
 import Layout from 'components/Layout';
@@ -56,8 +57,29 @@ const interventions = [
   },
 ];
 
+const GET_INTERVENTIONS = gql`
+  query getInvertions {
+    interventions {
+      date
+      ... on ImportInfectionsIntervention {
+        amount
+      }
+      ... on LimitMobilityIntervention {
+        value
+        minAge
+        maxAge
+        contactPlace
+      }
+    }
+  }
+`
+
+
 export default function Events() {
   const { t, i18n } = useTranslation(['common']);
+  const { loading, error, data } = useQuery(GET_INTERVENTIONS);
+
+  console.log(loading, error, data);
 
   return (
     <Layout>

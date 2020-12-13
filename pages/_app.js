@@ -1,14 +1,21 @@
-import '../styles/globals.scss'
+import 'styles/globals.scss'
 import App from 'next/app'
+import { ApolloProvider } from "@apollo/client";
 import { ThemeProvider } from 'styled-components';
-import { appWithTranslation } from '../i18n'
+
+import { useApollo } from 'common/apollo';
+import { appWithTranslation } from '../i18n';
 
 const appTheme = require('sass-extract-loader?{"plugins": ["sass-extract-js"]}!styles/themes/default.scss');
 function MyApp({ Component, pageProps }) {
+  const apolloClient = useApollo(pageProps.initialApolloState);
+
   return (
-    <ThemeProvider theme={appTheme}>
+    <ApolloProvider client={apolloClient}>
+      <ThemeProvider theme={appTheme}>
         <Component {...pageProps} />
-    </ThemeProvider>
+      </ThemeProvider>
+    </ApolloProvider>
   );
 }
 
