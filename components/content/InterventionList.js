@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Table } from 'reactstrap';
+import { Table, Button } from 'reactstrap';
 
 const EventRow = styled.tr`
   background-color: ${(props) => props.theme.themeColors.light};
@@ -28,14 +28,17 @@ const InterventionList = (props) => {
     <Table>
       <thead>
         <tr>
+          <th></th>
           <th>Date</th>
           <th>Event</th>
           <th>Value</th>
+          <th></th>
         </tr>
         </thead>
         <tbody>
           { interventions.map((intervention) =>
           <EventRow className={intervention.eventType} key={intervention.eventType}>
+            <td><Button close /></td>
             <td>{ intervention.date }</td>
             <td>{ intervention.eventName }</td>
             <td>{ intervention.value }</td>

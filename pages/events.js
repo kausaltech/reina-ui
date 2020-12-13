@@ -2,6 +2,7 @@ import Head from 'next/head';
 import { useTranslation } from '../i18n';
 import { Container, Row, Col } from 'reactstrap';
 import Layout from 'components/Layout';
+import AddIntervention from 'components/content/AddIntervention';
 import InterventionList from 'components/content/InterventionList';
 
 const interventions = [
@@ -67,6 +68,7 @@ export default function Events() {
       <Container className="mt-4">
         <Row className="mx-2">
           <Col>
+            <AddIntervention />
             <InterventionList interventions={interventions}/>
           </Col>
         </Row>
