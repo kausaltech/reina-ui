@@ -48,6 +48,7 @@ export default function Events() {
       <Container className="mt-4">
         <Row className="mx-2">
           <Col>
+            <AddIntervention />
             <InterventionList interventions={data ? data.interventions : [] }/>
           </Col>
         </Row>

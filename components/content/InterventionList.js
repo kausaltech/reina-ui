@@ -2,10 +2,11 @@ import styled from 'styled-components';
 import { useTranslation } from 'i18n';
 import dayjs from 'dayjs';
 import { Table, Button } from 'reactstrap';
+import DashCard from 'components/general/DashCard'
 
 const HeaderCell = styled.th`
   ${({ small }) => small && `
-    width: 32px;
+    width: 24px;
   `}
   ${({ medium }) => medium && `
     width: 120px;
@@ -16,7 +17,6 @@ const HeaderCell = styled.th`
 `;
 
 const EventRow = styled.tr`
-  background-color: ${(props) => props.theme.themeColors.light};
 `;
 
 const TableCell = styled.td`
@@ -87,29 +87,32 @@ const InterventionList = (props) => {
   }
   
   return (
-    <Table hover size="sm">
-      <thead>
-        <tr>
-          <HeaderCell small={true}></HeaderCell>
-          <HeaderCell medium={true} numeric>Date</HeaderCell>
-          <HeaderCell small={true}></HeaderCell>
-          <HeaderCell>Event</HeaderCell>
-          <HeaderCell small={true} numeric>Value</HeaderCell>
-          <HeaderCell medium={true}></HeaderCell>
-        </tr>
-        </thead>
-        <tbody>
-          { interventions && interventions.map((intervention) =>
-          <EventRow key={intervention.id}>
-            <TableCell><Button close /></TableCell>
-            <TableCell numeric>{ intervention.displayDate }</TableCell>
-            <TableCell className={intervention.type}></TableCell>
-            <TableCell>{ intervention.name }</TableCell>
-            <TableCell numeric>{ intervention.displayValue }</TableCell>
-            <TableCell>{ intervention.unit }</TableCell>
-          </EventRow> )}
-        </tbody>
-    </Table>
+    <DashCard>
+      <h5>Events</h5>
+      <Table hover size="sm">
+        <thead>
+          <tr>
+            <HeaderCell small={true}></HeaderCell>
+            <HeaderCell medium={true} numeric>Date</HeaderCell>
+            <HeaderCell small={true}></HeaderCell>
+            <HeaderCell>Event</HeaderCell>
+            <HeaderCell small={true} numeric>Value</HeaderCell>
+            <HeaderCell medium={true}></HeaderCell>
+          </tr>
+          </thead>
+          <tbody>
+            { interventions && interventions.map((intervention) =>
+            <EventRow key={intervention.id}>
+              <TableCell><Button close /></TableCell>
+              <TableCell numeric>{ intervention.displayDate }</TableCell>
+              <TableCell className={intervention.type}></TableCell>
+              <TableCell>{ intervention.name }</TableCell>
+              <TableCell numeric>{ intervention.displayValue }</TableCell>
+              <TableCell>{ intervention.unit }</TableCell>
+            </EventRow> )}
+          </tbody>
+      </Table>
+    </DashCard>
   );
 };
 

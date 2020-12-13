@@ -1,30 +1,18 @@
 import {useState} from 'react';
 import styled from 'styled-components';
-import {Form, FormGroup, Input, CustomInput, Button} from 'reactstrap';
+import {FormGroup, Input, CustomInput, Button} from 'reactstrap';
 import DatePicker from 'react-datepicker';
 import DashCard from 'components/general/DashCard'
 
 import "react-datepicker/dist/react-datepicker.css";
 
-const EventRow = styled.tr`
-  background-color: ${(props) => props.theme.themeColors.light};
+const Form = styled.div`
+  display: flex;
+  margin: -.5em;
+`;
 
-  &.import_infections {
-    color: ${(props) => props.theme.themeColors.white};
-    background-color: ${(props) => props.theme.graphColors.red070};
-  }
-
-  &.test_symptomatic, &.test_and_trace, &.test_severe {
-    background-color: ${(props) => props.theme.graphColors.blue010};
-  }
-
-  &.limit_mobility {
-    background-color: ${(props) => props.theme.graphColors.red030};
-  }
-
-  &.build_hospital_beds, &.build_icu_units {
-    background-color: ${(props) => props.theme.graphColors.blue030};
-  }
+const InputWrapper = styled.div`
+  padding: .5em;
 `;
 
 function handleChange(value, formattedValue) {
@@ -39,11 +27,11 @@ const AddIntervention = (props) => {
   return (
     <DashCard>
       <h5>Add event</h5>
-      <Form inline>
-        <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
+      <Form>
+        <InputWrapper>
           <DatePicker selected={startDate} onChange={date => setStartDate(date)} />
-        </FormGroup>
-        <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
+        </InputWrapper>
+        <InputWrapper>
           <CustomInput type="select" id="exampleCustomSelect" name="customSelect">
             <option value="">Select</option>
             <option>Value 1</option>
@@ -52,11 +40,13 @@ const AddIntervention = (props) => {
             <option>Value 4</option>
             <option>Test people only with severe symptoms, given percentage of mild cases are detected</option>
           </CustomInput>
-        </FormGroup>
-        <FormGroup>
+        </InputWrapper>
+        <InputWrapper>
           <Input type="text" name="value" id="exampleEmail" placeholder="value" />
-        </FormGroup>
-        <Button>Add</Button>
+        </InputWrapper>
+        <InputWrapper>
+          <Button>Add</Button>
+        </InputWrapper>
       </Form>
     </DashCard>
   );
