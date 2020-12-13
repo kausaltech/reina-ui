@@ -1,4 +1,5 @@
 {
-    "restriction-day-index": "Restriction Day Index",
-    "restriction-day-index-info": "The cumulative sum of daily percentages of mobility restrictions. The index can be used as a rough indicator of harmful psychological, social and economic effects. A higher index means more severe effects."
+  "TestingStrategyIntervention": "Test",
+  "LimitMobilityIntervention": "Limit mobility",
+  "ImportInfectionsIntervention": "Import infections"
 }

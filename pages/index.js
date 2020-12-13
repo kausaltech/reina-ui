@@ -1,43 +1,41 @@
 import Head from 'next/head';
+import { gql, useQuery, useMutation } from "@apollo/client";
 import { useTranslation } from '../i18n';
-import { Container, Row, Col } from 'reactstrap';
+import SimulationResults from 'components/SimulationResults';
 import Layout from 'components/Layout';
-import KeyIndicator from 'components/content/KeyIndicator';
+
+
+const START_SIMULATION = gql`
+  mutation {
+    runSimulation {
+      runId
+    }
+  }
+`;
+
 
 export default function Home() {
   const { t, i18n } = useTranslation(['common']);
+
+  const [
+    runSimulation,
+    { loading, error, data }
+  ] = useMutation(START_SIMULATION);
+
+  runSimulation();
+
+  if (loading || !data) {
+    return <div>Spinner</div>
+  }
+
+  const runId = data.runSimulation.runId;
 
   return (
     <Layout>
       <Head>
         <title>REINA - Front page</title>
       </Head>
-      <Container className="mt-4">
-        <Row className="mx-2">
-          <Col md="4" className="px-2">
-              <KeyIndicator
-                title={t("restriction-day-index")}
-                value="155"
-                info={t("restriction-day-index-info")}
-              />
-          </Col>
-          <Col md="4" className="px-2">
-              <KeyIndicator
-                title={t("restriction-day-index")}
-                value="155"
-                info={t("restriction-day-index-info")}
-              />
-          </Col>
-          <Col md="4" className="px-2">
-              <KeyIndicator
-                title={t("restriction-day-index")}
-                value="155"
-                info={t("restriction-day-index-info")}
-              />
-          </Col>
-        </Row>
-      </Container>
-      
+      <SimulationResults runId={runId} />
     </Layout>
   )
 }

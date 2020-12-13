@@ -1,64 +1,44 @@
 import Head from 'next/head';
+import { gql, useQuery } from "@apollo/client";
 import { useTranslation } from '../i18n';
 import { Container, Row, Col } from 'reactstrap';
 import Layout from 'components/Layout';
 import AddIntervention from 'components/content/AddIntervention';
 import InterventionList from 'components/content/InterventionList';
 
-const interventions = [
-  { id: 1,
-    date: "2020-02-20",
-    eventType: "import_infections",
-    eventName: "Import infections",
-    value: "5",
-    unit: "infections",
-  },
-  { id: 2,
-    date: "2020-02-20",
-    eventType: "test_symptomatic",
-    eventName: "Test all with symptoms",
-    value: "",
-    unit: "",
-  },
-  { id: 3,
-    date: "2020-02-20",
-    eventType: "test_and_trace",
-    eventName: "Test all with symptoms and perform contact tracing with given accuracy",
-    value: "",
-    unit: "",
-  },
-  { id: 3,
-    date: "2020-02-20",
-    eventType: "test_severe",
-    eventName: "Test people only with severe symptoms, given percentage of mild cases are detected",
-    value: "",
-    unit: "",
-  },
-  { id: 3,
-    date: "2020-02-20",
-    eventType: "limit_mobility",
-    eventName: "Limit population mobility",
-    value: "50",
-    unit: "%",
-  },
-  { id: 3,
-    date: "2020-02-20",
-    eventType: "build_hospital_beds",
-    eventName: "Build new hospital beds",
-    value: "55",
-    unit: "units",
-  },
-  { id: 3,
-    date: "2020-02-20",
-    eventType: "build_icu_units",
-    eventName: "Build new ICU units",
-    value: "25",
-    unit: "units",
-  },
-];
+const GET_INTERVENTIONS = gql`
+  query getInvertions {
+    interventions {
+      id
+      date
+      ... on ImportInfectionsIntervention {
+        amount
+      }
+      ... on LimitMobilityIntervention {
+        value
+        minAge
+        maxAge
+        contactPlace
+      }
+      ... on TestingStrategyIntervention {
+        strategy
+        efficiency
+      }
+    }
+  }
+`
+/*
+TestingStrategyIntervention
+strategy:
+NO_TESTING
+ONLY_SEVERE_SYMPTOMS
+ALL_WITH_SYMPTOMS
+CONTACT_TRACING
+*/
 
 export default function Events() {
   const { t, i18n } = useTranslation(['common']);
+  const { loading, error, data } = useQuery(GET_INTERVENTIONS);
 
   return (
     <Layout>
@@ -68,8 +48,7 @@ export default function Events() {
       <Container className="mt-4">
         <Row className="mx-2">
           <Col>
-            <AddIntervention />
-            <InterventionList interventions={interventions}/>
+            <InterventionList interventions={data ? data.interventions : [] }/>
           </Col>
         </Row>
       </Container>
