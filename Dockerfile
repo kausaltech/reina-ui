@@ -14,7 +14,7 @@ COPY . /app
 RUN yarn install
 
 # run the build. TODO: the build is currently failing, needs fixing
-#RUN yarn build
+RUN yarn build
 
 # Start app. If DEBUG is set to 'true', it'll run with development server
 EXPOSE 3000
