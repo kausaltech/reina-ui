@@ -2,7 +2,7 @@
 env
 if [ $ENV == 'dev' ]
 then
-    yarn dev
+    yarn dev --hostname 0.0.0.0
 else
-    yarn start
+    yarn start --hostname 0.0.0.0
 fi
