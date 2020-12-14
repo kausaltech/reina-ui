@@ -14,14 +14,15 @@ class HealthcareCapacityGraph extends React.Component {
     let baseData = [
         {
             y: metrics.find(m => m.id == 'available_hospital_beds').values,
-            name:'Available hospital beds',
+            name:'Hospital beds',
             marker: {color: 'yellow'},
         },
         {
             y: metrics.find(m => m.id == 'available_icu_units').values,
-            name:'Available ICU units',
+            name:'ICU units',
             marker: {color: 'purple'},
         },
+        /*
         {
             y: metrics.find(m => m.id == 'hospitalized').values,
             name:'Hospitalized',
@@ -31,7 +32,7 @@ class HealthcareCapacityGraph extends React.Component {
             y: metrics.find(m => m.id == 'in_icu').values,
             name:'In ICU',
             marker: {color: 'red'},
-        },
+        },*/
     ]
 
     let dates = this.props.dailyMetrics.dates;
