@@ -43,7 +43,12 @@ function handleChange(value, formattedValue) {
 }
 
 const ParameterInput = (props) => {
-  const { parameter } = props;
+  const { parameter, onChangeParameter } = props;
+
+  function handleInputChange(event) {
+    onChangeParameter({id: parameter.id, value:event.target.value});
+  }
+
   let inputElement;
 
   if (parameter.__typename === 'InterventionIntParameter') inputElement = (
@@ -58,33 +63,35 @@ const ParameterInput = (props) => {
         name={parameter.id}
         min={parameter.maxValue}
         max={parameter.maxValue}
+        onChange={handleInputChange}
       />
     </FormGroup>
     );
 
-    if (parameter.__typename === 'InterventionChoiceParameter') inputElement = (
-      <FormGroup>
-        <Label for={`${parameter.id}Field`}>
-          { parameter.description }
-          { parameter.required && <small>*</small>}
-        </Label>
-        <CustomInput
-          type="select"
-          id={`${parameter.id}Field`}
-          name={parameter.id}
-        >
-          <option value="">Select</option>
-          { parameter.choices && parameter.choices.map((choice, index) => (
-            <option
-              key={choice}
-              value={choice}
-            >
-                { parameter.labels[index] }
-            </option>
-          ))}
-        </CustomInput>
-      </FormGroup>
-      );
+  if (parameter.__typename === 'InterventionChoiceParameter') inputElement = (
+    <FormGroup>
+      <Label for={`${parameter.id}Field`}>
+        { parameter.description }
+        { parameter.required && <small>*</small>}
+      </Label>
+      <CustomInput
+        type="select"
+        id={`${parameter.id}Field`}
+        name={parameter.id}
+        onChange={handleInputChange}
+      >
+        <option value="">Select</option>
+        { parameter.choices && parameter.choices.map((choice, index) => (
+          <option
+            key={choice}
+            value={choice}
+          >
+              { parameter.labels[index] }
+          </option>
+        ))}
+      </CustomInput>
+    </FormGroup>
+    );
     
     return (
       <InputWrapper>
@@ -94,13 +101,36 @@ const ParameterInput = (props) => {
 };
 
 const InterventionParameters = (props) => {
-  const { intervention } = props;
-  const parameters = intervention ? intervention.parameters : [];
+  const { intervention, handleChangeParameters } = props;
+  const [interventionType, setIntervention] = useState(intervention.type);
+  const [allParameters, setAllParameters] = useState([]);
+  
+  // If intervention type has changed, reset parameters state
+  if(interventionType !== intervention.type) {
+    const newParameters = [];
+    intervention.parameters.forEach((parameter)=> newParameters.push({id: parameter.id, value:''}));
+    setAllParameters(newParameters);
+    setIntervention(intervention.type);
+  }
 
-  return parameters.length > 0 ? (
+  // Update the changed parameter in state array
+  const handleInputsChange = (event) => {
+    const currentParameters = allParameters;
+    const changed = allParameters.findIndex((element) => element.id === event.id);
+    currentParameters[changed] = event;
+    setAllParameters(currentParameters);
+    handleChangeParameters(currentParameters);
+  };
+
+  return (intervention.parameters.length > 0) ? (
       <ParametersHolder>
-      {parameters.map((parameter)=>(
-        <ParameterInput parameter={parameter} key={parameter.id} />
+      {intervention.parameters.map((parameter)=>(
+        <ParameterInput
+          parameter={parameter}
+          key={parameter.id}
+          onChangeParameter={handleInputsChange}
+          intervention={intervention.id}
+        />
       ))}
       </ParametersHolder>
     ) : (
@@ -110,16 +140,35 @@ const InterventionParameters = (props) => {
 
 const AddIntervention = (props) => {
   const { interventions } = props;
+
   const [startDate, setStartDate] = useState(new Date());
   const [activeIntervention, setActiveIntervention] = useState('');
+  const [parameters, setParameters] = useState([]);
 
   function handleInterventionChange(e) {
-      setActiveIntervention(e.target.value);
+    setActiveIntervention(e.target.value);
+    setParameters([]);
+  }
+
+  function handleParametersChange(e) {
+    setParameters(e);
+  }
+
+  const handleSubmit = (evt) => {
+    evt.preventDefault();
+    const newIntervention = {
+      type: activeIntervention,
+      date: startDate,
+      parameters: parameters,
+    }
+    console.log(`Adding intervention`);
+    console.log(newIntervention);
   }
 
   return (
     <DashCard>
       <h5>Add new event</h5>
+      <form onSubmit={handleSubmit}>
       <FormRow>
         <InputWrapper>
           <CustomInput
@@ -144,14 +193,16 @@ const AddIntervention = (props) => {
           <DatePicker selected={startDate} onChange={date => setStartDate(date)} />
         </InputWrapper>
         <InputWrapper>
-          <Button>Add</Button>
+          <Button type="submit">Add</Button>
         </InputWrapper>
       </FormRow>
       <FormRow>
-          <InterventionParameters
+        {activeIntervention && <InterventionParameters
             intervention={interventions.find((element) => element.type === activeIntervention)}
-          />
+            handleChangeParameters={handleParametersChange}
+          /> }
       </FormRow>
+      </form>
     </DashCard>
   );
 };
