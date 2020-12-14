@@ -15,6 +15,7 @@ const SideNav = styled.div`
 
 const SideHeader = styled.div`
   margin-bottom: ${(props)=>props.theme.spaces.s100};
+  padding: 0.5rem 1rem;
 `;
 
 const AppTitle = styled.h1`
@@ -24,6 +25,21 @@ const AppTitle = styled.h1`
   font-weight: ${(props) => props.theme.fontWeightBold };
   color: ${(props)=>props.theme.themeColors.light};
   letter-spacing: 4px;
+`;
+
+const LanguageSwitch = styled.div`
+  margin-top: ${(props)=>props.theme.spaces.s100};
+  padding: 0.5rem 0.5rem;
+
+  .btn.btn-link {
+    color: ${(props)=>props.theme.brandLight};
+    opacity: .65;
+
+    &.disabled {
+      color: ${(props)=>props.theme.brandLight};
+      opacity: 1;
+    }
+  }
 `;
 
 const NavItem = styled(BSNavItem)`
@@ -66,21 +82,25 @@ const SideBarNav = ({ children }) => {
         </NavItem>
       </Nav>
 
-      <Button
-          onClick={() => i18n.changeLanguage('fi')}
+      <LanguageSwitch>
+        <Button
+            onClick={() => i18n.changeLanguage('fi')}
+            color="link"
+            disabled={language==='fi'}
+            size="sm"
+          >
+            SUOMI
+        </Button>
+        |
+        <Button
+          onClick={() => i18n.changeLanguage('en')}
           color="link"
-          disabled={language==='fi'}
+          disabled={language==='en'}
+          size="sm"
         >
-          SUOMI
-      </Button>
-      |
-      <Button
-        onClick={() => i18n.changeLanguage('en')}
-        color="link"
-        disabled={language==='en'}
-      >
-        ENGLISH
-      </Button>
+          ENGLISH
+        </Button>
+      </LanguageSwitch>
     </SideNav>
   );
 };
