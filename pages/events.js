@@ -47,12 +47,11 @@ const GET_INTERVENTIONS = gql`
             id
             label
           }
-          required
         }
         ... on InterventionIntParameter {
           minValue
           maxValue
-          required
+          unit
         }
       }
     }

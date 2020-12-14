@@ -81,12 +81,12 @@ const ParameterInput = (props) => {
         onChange={handleInputChange}
       >
         <option value="">Select</option>
-        { parameter.choices && parameter.choices.map((choice, index) => (
+        { parameter.choices && parameter.choices.map((choice) => (
           <option
-            key={choice}
-            value={choice}
+            key={choice.id}
+            value={choice.id}
           >
-              { parameter.labels[index] }
+              { choice.label }
           </option>
         ))}
       </CustomInput>
