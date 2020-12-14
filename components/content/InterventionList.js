@@ -1,12 +1,11 @@
 import styled from 'styled-components';
-import { useTranslation } from 'i18n';
 import dayjs from 'dayjs';
 import { Table, Button } from 'reactstrap';
-import DashCard from 'components/general/DashCard'
+import DashCard from 'components/general/DashCard';
 
 const HeaderCell = styled.th`
   ${({ small }) => small && `
-    width: 24px;
+    width: 16px;
   `}
   ${({ medium }) => medium && `
     width: 120px;
@@ -16,20 +15,17 @@ const HeaderCell = styled.th`
   `}
 `;
 
-const EventRow = styled.tr`
-`;
-
 const TableCell = styled.td`
-  &.ImportInfectionsIntervention {
+  &.IMPORT_INFECTIONS {
     color: ${(props) => props.theme.themeColors.white};
     background-color: ${(props) => props.theme.graphColors.red070};
   }
 
-  &.TestingStrategyIntervention {
+  &.TEST_ALL_WITH_SYMPTOMS, &.TEST_ONLY_SEVERE_SYMPTOMS, &.TEST_WITH_CONTACT_TRACING {
     background-color: ${(props) => props.theme.graphColors.blue010};
   }
 
-  &.LimitMobilityIntervention {
+  &.LIMIT_MOBILITY {
     background-color: ${(props) => props.theme.graphColors.red030};
   }
 
@@ -42,50 +38,34 @@ const TableCell = styled.td`
   `}
 `;
 
-const displayIntervention = (intervention) => {
-  const { t } = useTranslation(['common']);
+// TODO: Handle displaying special case values ie. (min_age-max_age)
+const DisplayValueParameters = (props) => {
+  const { parameters } = props;
+  return (
+    <>
+      { parameters.map((param) => param.__typename === 'InterventionIntParameter' && <div key={param.id}>{param.value} {param.unit}</div>)}
+    </>
+  )
+};
 
-  let formattedIntervention = {
-    id: intervention.id,
-    date: intervention.date,
-    displayDate: dayjs(intervention.date).format('DD.MM.YY'),
-    type: intervention.__typename,
-  };
-
-  switch(formattedIntervention.type) {
-    case 'ImportInfectionsIntervention':
-      formattedIntervention.name = t(intervention.__typename); 
-      formattedIntervention.displayValue = intervention.amount;
-      formattedIntervention.unit = 'infections';
-    break;
-    case 'TestingStrategyIntervention': 
-      formattedIntervention.name = `${t(intervention.__typename)}: ${t(intervention.strategy)}`;
-      formattedIntervention.displayValue = intervention.efficiency;
-      formattedIntervention.unit = '';
-    break;
-    case 'LimitMobilityIntervention': 
-      formattedIntervention.name = `${t(intervention.__typename)} (${t(intervention.minAge)} - ${t(intervention.maxAge)})`; 
-      formattedIntervention.displayValue = intervention.value;
-      formattedIntervention.unit = '%';
-    break;
-    default:
-      formattedIntervention.name = 'Unknown intervention'; 
-      formattedIntervention.displayValue = '';
-      formattedIntervention.unit = '';
-  }
-
-  return formattedIntervention;
-}
+const DisplayChoiceParameters = (props) => {
+  const { parameters } = props;
+  return (
+    <>
+      { parameters.map((param) => param.__typename === 'InterventionChoiceParameter' && <span key={param.id}>({param.label})</span>)}
+    </>
+  )
+};
 
 const InterventionList = (props) => {
-  const { interventions:rawInterventions } = props;
-  let interventions;
+  const { interventions: rawInterventions } = props;
+  let interventions = [];
 
   if (rawInterventions) {
-    interventions = rawInterventions.map((intervention)=>displayIntervention(intervention));
+    interventions = rawInterventions.map((intervention)=>intervention);
     interventions.sort((a, b) => (a.date > b.date) ? 1 : -1);
   }
-  
+
   return (
     <DashCard>
       <h5>Events</h5>
@@ -93,23 +73,28 @@ const InterventionList = (props) => {
         <thead>
           <tr>
             <HeaderCell small={true}></HeaderCell>
-            <HeaderCell medium={true} numeric>Date</HeaderCell>
             <HeaderCell small={true}></HeaderCell>
             <HeaderCell>Event</HeaderCell>
-            <HeaderCell small={true} numeric>Value</HeaderCell>
-            <HeaderCell medium={true}></HeaderCell>
+            <HeaderCell medium={true} numeric>Value</HeaderCell>
+            <HeaderCell medium={true} numeric>Date</HeaderCell>
           </tr>
           </thead>
           <tbody>
             { interventions && interventions.map((intervention) =>
-            <EventRow key={intervention.id}>
+            <tr key={intervention.id}>
               <TableCell><Button close /></TableCell>
-              <TableCell numeric>{ intervention.displayDate }</TableCell>
               <TableCell className={intervention.type}></TableCell>
-              <TableCell>{ intervention.name }</TableCell>
-              <TableCell numeric>{ intervention.displayValue }</TableCell>
-              <TableCell>{ intervention.unit }</TableCell>
-            </EventRow> )}
+              <TableCell>
+                { intervention.description }
+                <DisplayChoiceParameters parameters={intervention.parameters} />
+                </TableCell>
+              <TableCell numeric>
+                <DisplayValueParameters parameters={intervention.parameters} />
+              </TableCell>
+              <TableCell numeric>
+                { dayjs(intervention.date).format('DD.MM.YY') }
+              </TableCell>
+            </tr> )}
           </tbody>
       </Table>
     </DashCard>

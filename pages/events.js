@@ -1,34 +1,35 @@
 import Head from 'next/head';
 import { gql, useQuery } from "@apollo/client";
 import { useTranslation } from '../i18n';
-import { Container, Row, Col } from 'reactstrap';
+import { Container, Row, Col, Spinner } from 'reactstrap';
 import Layout from 'components/Layout';
 import AddIntervention from 'components/content/AddIntervention';
 import InterventionList from 'components/content/InterventionList';
+import DashCard from 'components/general/DashCard';
 
-/*
 const GET_ACTIVE_INTERVENTIONS = gql`
-  query getInvertions {
-    interventions {
+  query GetActiveInvertions {
+    activeInterventions {
       id
+      type
       date
-      ... on ImportInfectionsIntervention {
-        amount
-      }
-      ... on LimitMobilityIntervention {
-        value
-        minAge
-        maxAge
-        contactPlace
-      }
-      ... on TestingStrategyIntervention {
-        strategy
-        efficiency
+      description
+      parameters {
+        id
+        ... on InterventionIntParameter {
+          id
+          value
+          unit
+        }
+        ... on InterventionChoiceParameter {
+          id
+          choice
+          label
+        }
       }
     }
   }
-`
-*/
+`;
 
 const GET_INTERVENTIONS = gql`
   query GetAvailableInterventions {
@@ -56,6 +57,7 @@ const GET_INTERVENTIONS = gql`
 export default function Events() {
   const { t, i18n } = useTranslation(['common']);
   const { loading, error, data } = useQuery(GET_INTERVENTIONS);
+  const { loading: loadingActive, error: errorActive, data: dataActive } = useQuery(GET_ACTIVE_INTERVENTIONS);
 
   return (
     <Layout>
@@ -65,8 +67,12 @@ export default function Events() {
       <Container className="mt-4">
         <Row className="mx-2">
           <Col>
-            <AddIntervention interventions={data ? data.availableInterventions : []} />
-            <InterventionList interventions={[]} />
+            { loading ?
+              <Spinner style={{ width: '3rem', height: '3rem' }} /> :
+              <AddIntervention interventions={data ? data.availableInterventions : []} /> }
+            { loadingActive ?
+              <Spinner style={{ width: '3rem', height: '3rem' }} /> :
+              <InterventionList interventions={dataActive ? dataActive.activeInterventions : []} />}
           </Col>
         </Row>
       </Container>
