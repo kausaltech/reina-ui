@@ -22,9 +22,11 @@ const GET_ACTIVE_INTERVENTIONS = gql`
           unit
         }
         ... on InterventionChoiceParameter {
-          id
-          choice
-          label
+          choices {
+            id
+            label
+          }
+          required
         }
       }
     }
@@ -41,8 +43,10 @@ const GET_INTERVENTIONS = gql`
         description
         required
         ... on InterventionChoiceParameter {
-          choices
-          labels
+          choices {
+            id
+            label
+          }
           required
         }
         ... on InterventionIntParameter {
@@ -76,7 +80,7 @@ export default function Events() {
           </Col>
         </Row>
       </Container>
-      
+
     </Layout>
   )
 }
