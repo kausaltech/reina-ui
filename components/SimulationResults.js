@@ -4,6 +4,7 @@ import { I18nContext } from 'next-i18next';
 import { gql, useQuery, useMutation } from "@apollo/client";
 import { Container, Row, Col } from 'reactstrap';
 import KeyIndicator from 'components/content/KeyIndicator';
+import PopulationGraph from 'components/charts/PopulationGraph';
 
 
 const GET_SIMULATION_RESULTS = gql`
@@ -26,7 +27,7 @@ function SimulationResults({ runId }) {
   const { t, i18n } = useTranslation(['common']);
 
   const {
-    loading, error, data 
+    loading, error, data
   } = useQuery(GET_SIMULATION_RESULTS, { variables: { runId }});
 
   if (loading) {
@@ -62,6 +63,11 @@ function SimulationResults({ runId }) {
               value="155"
               info={t("restriction-day-index-info")}
             />
+        </Col>
+      </Row>
+      <Row className="mx-2">
+        <Col md="12">
+          <PopulationGraph dailyMetrics={data.simulationResults.predictedMetrics} />
         </Col>
       </Row>
     </Container>
