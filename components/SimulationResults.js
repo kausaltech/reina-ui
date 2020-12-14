@@ -27,18 +27,26 @@ function SimulationResults({ runId }) {
   const { t, i18n } = useTranslation(['common']);
 
   const {
-    loading, error, data
-  } = useQuery(GET_SIMULATION_RESULTS, { variables: { runId }});
+    loading, error, data, startPolling, stopPolling
+  } = useQuery(GET_SIMULATION_RESULTS, {
+    variables: { runId },
+    pollInterval: 500,
+  });
 
   if (loading) {
     return <div>Spinner2</div>
   }
   if (error) {
     console.log(error);
-    return <div>Errrrrrorr</div>
+    return <div>Errrrrrorr in starting simulation</div>
   }
 
-  console.log(data);
+  const { simulationResults } = data;
+
+  if (simulationResults.finished) {
+    console.log('simulation run done, stop polling');
+    stopPolling();
+  }
 
   return (
     <Container className="mt-4">

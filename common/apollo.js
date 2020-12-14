@@ -9,6 +9,8 @@ function createApolloClient() {
   let uri = (ssrMode ?
              process.env.SERVER_GRAPHQL_ENDPOINT:
              process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT);
+
+  console.log(uri);
   // console.log("endpoint...", uri)
   return new ApolloClient({
     ssrMode: ssrMode,

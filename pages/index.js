@@ -24,10 +24,16 @@ export default function Home() {
 
   runSimulation();
 
+  if (error) {
+    console.log(error);
+    return <div>Erroorrr in starting simulation</div>
+  }
+
   if (loading || !data) {
     return <div>Spinner</div>
   }
 
+  console.log('got data', data);
   const runId = data.runSimulation.runId;
 
   return (
