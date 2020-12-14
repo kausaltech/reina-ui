@@ -6,7 +6,8 @@ import Layout from 'components/Layout';
 import AddIntervention from 'components/content/AddIntervention';
 import InterventionList from 'components/content/InterventionList';
 
-const GET_INTERVENTIONS = gql`
+/*
+const GET_ACTIVE_INTERVENTIONS = gql`
   query getInvertions {
     interventions {
       id
@@ -27,15 +28,31 @@ const GET_INTERVENTIONS = gql`
     }
   }
 `
-/*
-TestingStrategyIntervention
-strategy:
-NO_TESTING
-ONLY_SEVERE_SYMPTOMS
-ALL_WITH_SYMPTOMS
-CONTACT_TRACING
 */
 
+const GET_INTERVENTIONS = gql`
+  query GetAvailableInterventions {
+    availableInterventions {
+      type
+      description
+      parameters {
+        id
+        description
+        required
+        ... on InterventionChoiceParameter {
+          choices
+          labels
+          required
+        }
+        ... on InterventionIntParameter {
+          minValue
+          maxValue
+          required
+        }
+      }
+    }
+  }
+`;
 export default function Events() {
   const { t, i18n } = useTranslation(['common']);
   const { loading, error, data } = useQuery(GET_INTERVENTIONS);
@@ -48,8 +65,8 @@ export default function Events() {
       <Container className="mt-4">
         <Row className="mx-2">
           <Col>
-            <AddIntervention />
-            <InterventionList interventions={data ? data.interventions : [] }/>
+            <AddIntervention interventions={data ? data.availableInterventions : []} />
+            <InterventionList interventions={[]} />
           </Col>
         </Row>
       </Container>
