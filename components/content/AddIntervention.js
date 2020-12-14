@@ -74,12 +74,12 @@ const ParameterInput = (props) => {
           name={parameter.id}
         >
           <option value="">Select</option>
-          { parameter.choices && parameter.choices.map((choice) => (
+          { parameter.choices && parameter.choices.map((choice, index) => (
             <option
               key={choice}
               value={choice}
             >
-                { choice }
+                { parameter.labels[index] }
             </option>
           ))}
         </CustomInput>
