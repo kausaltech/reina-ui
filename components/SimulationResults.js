@@ -5,6 +5,8 @@ import { gql, useQuery, useMutation } from "@apollo/client";
 import { Container, Row, Col } from 'reactstrap';
 import KeyIndicator from 'components/content/KeyIndicator';
 import PopulationGraph from 'components/charts/PopulationGraph';
+/* import ValidationGraph from 'components/charts/ValidationGraph';*/
+import HealthcareCapacityGraph from 'components/charts/HealthcareCapacityGraph';
 
 
 const GET_SIMULATION_RESULTS = gql`
@@ -78,6 +80,18 @@ function SimulationResults({ runId }) {
           <PopulationGraph dailyMetrics={data.simulationResults.predictedMetrics} />
         </Col>
       </Row>
+      <Row className="mx-2">
+        <Col md="12">
+          <HealthcareCapacityGraph dailyMetrics={data.simulationResults.predictedMetrics} />
+        </Col>
+      </Row>
+      {/* Validation needs the confirmed data as well
+      <Row className="mx-2">
+        <Col md="12">
+          <ValidationGraph dailyMetrics={data.simulationResults.predictedMetrics} />
+        </Col>
+      </Row>
+      */}
     </Container>
   )
 }
