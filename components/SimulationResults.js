@@ -79,7 +79,7 @@ function SimulationResults({ runId }) {
   console.log("Results", simulationResults, validationMetrics)
 
   return (
-    <Container className="mt-4">
+    <Container className="mt-4" fluid="lg">
       <Row className="mx-2">
         <Col md="12">
           <DashCard>
