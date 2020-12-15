@@ -74,14 +74,28 @@ const DELETE_INTERVENTION = gql`
   }
 `;
 
+const RESET_INTERVENTIONS = gql`
+  mutation ResetVariables {
+    resetVariables {
+      ok
+    }
+  }
+`;
+
 const InterventionList = (props) => {
   const { interventions: rawInterventions, updateList } = props;
 
   const [deleteIntervention] = useMutation(DELETE_INTERVENTION, {
     onCompleted({data}) {
-      setActiveIntervention('');
-      updateList();
+      //updateList();
       console.log(`Intervention deleted`);
+    }
+  });
+
+  const [resetInterventions] = useMutation(RESET_INTERVENTIONS, {
+    onCompleted({data}) {
+      updateList();
+      console.log(`Interventions reseted`);
     }
   });
 
@@ -95,6 +109,7 @@ const InterventionList = (props) => {
   return (
     <DashCard>
       <h5>Events</h5>
+      <Button size="sm" className="float-right mb-3" onClick={resetInterventions}>Reset Scenario</Button>
       <Table hover size="sm">
         <thead>
           <tr>
