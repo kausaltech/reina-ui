@@ -25,6 +25,12 @@ function createApolloClient() {
         InterventionFloatParameter: {
           keyFields: false,
         },
+        InterventionChoiceParameter: {
+          keyFields: false,
+        },
+        Choice: {
+          keyFields: false,
+        },
       },
     }),
   });
