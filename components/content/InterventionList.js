@@ -29,7 +29,7 @@ const TableCell = styled.td`
     background-color: ${(props) => props.theme.graphColors.red030};
   }
 
-  &.HealthcareCapacityIntervention {
+  &.BUILD_NEW_ICU_UNITS, &.BUILD_NEW_HOSPITAL_BEDS  {
     background-color: ${(props) => props.theme.graphColors.blue030};
   }
 
@@ -52,7 +52,7 @@ const DisplayChoiceParameters = (props) => {
   const { parameters } = props;
   return (
     <>
-      { parameters.map((param) => param.__typename === 'InterventionChoiceParameter' && <span key={param.id}>({param.label})</span>)}
+      { parameters.map((param) => param.__typename === 'InterventionChoiceParameter' && <span key={param.id}> ({param.choice.label})</span>)}
     </>
   )
 };
@@ -92,7 +92,7 @@ const InterventionList = (props) => {
                 <DisplayValueParameters parameters={intervention.parameters} />
               </TableCell>
               <TableCell numeric>
-                { dayjs(intervention.date).format('DD.MM.YY') }
+                { dayjs(intervention.date).format('DD.MM.YYYY') }
               </TableCell>
             </tr> )}
           </tbody>

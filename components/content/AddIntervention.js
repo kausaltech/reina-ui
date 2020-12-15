@@ -169,7 +169,7 @@ const InterventionForm = (props) => {
 };
 
 const ADD_INTERVENTION = gql`
-  mutation AddNewIntervention($date: String!, $type: ID!, $parameters: [InterventionInputParameter]) {
+  mutation AddNewIntervention($date: String!, $type: InverventionType!, $parameters: [InterventionInputParameter]) {
     addIntervention(intervention: {date: $date, type: $type, parameters: $parameters}) {
         id
     }
@@ -178,11 +178,19 @@ const ADD_INTERVENTION = gql`
 
 
 const AddIntervention = (props) => {
-  const { interventions } = props;
+  const { interventions, handleSuccess } = props;
 
   const [date, setDate] = useState(new Date());
   const [activeIntervention, setActiveIntervention] = useState('');
-  const [submitIntervention, { data }] = useMutation(ADD_INTERVENTION);
+  const [submitIntervention, { data: addedIntervention, loading: addingIntervention }] = useMutation(ADD_INTERVENTION, {
+    onCompleted({addedIntervention}) {
+      setActiveIntervention('');
+      // TODO: This fires too early? Parent refetch does not get the added intervention
+      handleSuccess();
+      console.log(`New intervention added`);
+      console.log(addedIntervention);
+    }
+  });
 
   function handleInterventionChange(e) {
     setActiveIntervention(e.target.value);
@@ -210,14 +218,13 @@ const AddIntervention = (props) => {
       parameters: serializeInputs(values, activeIntervention),
     }
     submitIntervention({variables: newIntervention});
-    setActiveIntervention('');
-    console.log(`Posting new intervention`);
-    console.log(newIntervention);
   }
 
   return (
     <DashCard>
       <h5>Add new event</h5>
+      { addingIntervention && <h6>Adding new intervention</h6> }
+      { addedIntervention && <h6>New intervention set</h6> }
       <FormRow>
         <InputWrapper>
           <CustomInput
