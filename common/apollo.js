@@ -17,7 +17,16 @@ function createApolloClient() {
       uri: uri || 'http://localhost:5000/graphql',
       credentials: 'include',
     }),
-    cache: new InMemoryCache(),
+    cache: new InMemoryCache({
+      typePolicies: {
+        InterventionIntParameter: {
+          keyFields: false,
+        },
+        InterventionFloatParameter: {
+          keyFields: false,
+        },
+      },
+    }),
   });
 }
 
