@@ -1,4 +1,5 @@
 import {useState, useEffect} from 'react';
+import { gql, useMutation } from "@apollo/client";
 import styled from 'styled-components';
 import dayjs from 'dayjs';
 import {FormGroup, Label, Input, CustomInput, Button, FormFeedback} from 'reactstrap';
@@ -167,11 +168,21 @@ const InterventionForm = (props) => {
     )
 };
 
+const ADD_INTERVENTION = gql`
+  mutation AddNewIntervention($date: String!, $type: ID!, $parameters: [InterventionInputParameter]) {
+    addIntervention(intervention: {date: $date, type: $type, parameters: $parameters}) {
+        id
+    }
+  }
+`;
+
+
 const AddIntervention = (props) => {
   const { interventions } = props;
 
   const [date, setDate] = useState(new Date());
   const [activeIntervention, setActiveIntervention] = useState('');
+  const [submitIntervention, { data }] = useMutation(ADD_INTERVENTION);
 
   function handleInterventionChange(e) {
     setActiveIntervention(e.target.value);
@@ -185,7 +196,7 @@ const AddIntervention = (props) => {
       const parameterType = interventionParameters?.find((element) => element.id === key);
       if (parameterType) {
         if (parameterType.__typename === 'InterventionChoiceParameter') params.push({id: key, choice: value})
-        else params.push({id: key, value: value})
+        else params.push({id: key, value: parseInt(value, 10)})
       }
     }
 
@@ -198,6 +209,7 @@ const AddIntervention = (props) => {
       date: dayjs(date).format('YYYY-MM-DD'),
       parameters: serializeInputs(values, activeIntervention),
     }
+    submitIntervention({variables: newIntervention});
     setActiveIntervention('');
     console.log(`Posting new intervention`);
     console.log(newIntervention);
