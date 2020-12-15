@@ -191,12 +191,12 @@ const AddIntervention = (props) => {
   const [date, setDate] = useState(new Date());
   const [activeIntervention, setActiveIntervention] = useState('');
   const [submitIntervention, { data: addedIntervention, loading: addingIntervention }] = useMutation(ADD_INTERVENTION, {
-    onCompleted({addedIntervention}) {
+    onCompleted({data}) {
       setActiveIntervention('');
       // TODO: This fires too early? Parent refetch does not get the added intervention
       handleSuccess();
       console.log(`New intervention added`);
-      console.log(addedIntervention);
+      console.log(data);
     }
   });
 

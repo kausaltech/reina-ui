@@ -87,17 +87,21 @@ const InterventionList = (props) => {
 
   const [deleteIntervention] = useMutation(DELETE_INTERVENTION, {
     onCompleted({data}) {
-      //updateList();
-      console.log(`Intervention deleted`);
+      updateList();
+      //console.log(`Intervention deleted`);
     }
   });
 
   const [resetInterventions] = useMutation(RESET_INTERVENTIONS, {
     onCompleted({data}) {
       updateList();
-      console.log(`Interventions reseted`);
+      //console.log(`Interventions reseted`);
     }
   });
+
+  const handleDelete = (id, evt) => {
+    deleteIntervention({variables: { id }});
+  };
 
   let interventions = [];
 
@@ -123,7 +127,7 @@ const InterventionList = (props) => {
           <tbody>
             { interventions && interventions.map((intervention) =>
             <tr key={intervention.id}>
-              <TableCell><Button close /></TableCell>
+              <TableCell><Button close onClick={(e) => handleDelete(intervention.id, e)}/></TableCell>
               <TableCell className={intervention.type}></TableCell>
               <TableCell>
                 { intervention.description }

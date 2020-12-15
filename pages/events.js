@@ -62,7 +62,7 @@ export default function Events() {
   const { loading: loadingActive, error: errorActive, data: dataActive, refetch } = useQuery(GET_ACTIVE_INTERVENTIONS);
 
   const updateList = () => {
-    console.log('Updating list');
+    //console.log('Updating list');
     refetch();
   };
 
