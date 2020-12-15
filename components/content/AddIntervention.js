@@ -1,6 +1,9 @@
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import styled from 'styled-components';
-import {FormGroup, Label, Input, CustomInput, Button} from 'reactstrap';
+import dayjs from 'dayjs';
+import {FormGroup, Label, Input, CustomInput, Button, FormFeedback} from 'reactstrap';
+import { Formik, Form, useFormikContext } from 'formik';
+import * as Yup from 'yup';
 import DatePicker from 'react-datepicker';
 import DashCard from 'components/general/DashCard'
 
@@ -28,9 +31,12 @@ const Required = styled.small`
   color: ${(props) => props.theme.graphColors.red070};
 `;
 
+const SubmitWrapper = styled.div`
+  margin: 24px 0;
+`;
+
 const ParametersHolder = styled.div`
   display: flex;
-  align-items: flex-end;
   width: 100%;
   padding: .5rem .5rem 0;
   margin: .5rem .5rem -.5rem .5rem;
@@ -38,137 +44,168 @@ const ParametersHolder = styled.div`
   background-color: ${(props) => props.theme.themeColors.light};
 `;
 
-function handleChange(value, formattedValue) {
-  return false;
+const ResetForm = (props) => {
+  const { actions } = useFormikContext();
+
+  useEffect(() => {
+    actions.resetForm();
+  }, [props.type]);
+  return null;
 }
 
-const ParameterInput = (props) => {
-  const { parameter, onChangeParameter } = props;
+const InterventionForm = (props) => {
 
-  function handleInputChange(event) {
-    onChangeParameter({id: parameter.id, value:event.target.value});
-  }
+  const { type, parameters, onSubmit } = props;
 
-  let inputElement;
+  let initialValues = {}
+  let parametersSchema = Yup.object().shape({});
 
-  if (parameter.__typename === 'InterventionIntParameter') inputElement = (
-    <FormGroup>
-      <Label for={`${parameter.id}Field`}>
-        { parameter.description }
-        { parameter.required && <Required> *</Required>}
-      </Label>
-      <Input
-        type="text"
-        id={`${parameter.id}Field`}
-        name={parameter.id}
-        min={parameter.maxValue}
-        max={parameter.maxValue}
-        onChange={handleInputChange}
-      />
-    </FormGroup>
-    );
+  parameters?.forEach((param) => {
+    // add parameter to form initial values
+    initialValues[param.id] = '';
 
-  if (parameter.__typename === 'InterventionChoiceParameter') inputElement = (
-    <FormGroup>
-      <Label for={`${parameter.id}Field`}>
-        { parameter.description }
-        { parameter.required && <small>*</small>}
-      </Label>
-      <CustomInput
-        type="select"
-        id={`${parameter.id}Field`}
-        name={parameter.id}
-        onChange={handleInputChange}
-      >
-        <option value="">Select</option>
-        { parameter.choices && parameter.choices.map((choice) => (
-          <option
-            key={choice.id}
-            value={choice.id}
-          >
-              { choice.label }
-          </option>
-        ))}
-      </CustomInput>
-    </FormGroup>
-    );
-    
-    return (
-      <InputWrapper>
-        {inputElement}
-      </InputWrapper>
-    );
-};
+    // add parameter to validation schema
+    if(param.__typename === 'InterventionChoiceParameter') {
+      const validationObject = Yup.object().shape({
+        [param.id]:Yup.string().concat( param.required ? Yup.string().required() : null ),
+      });
+      parametersSchema = parametersSchema.concat(validationObject);
+    }
+    if(param.__typename === 'InterventionIntParameter') {
+      const validationObject = Yup.object().shape({
+        [param.id]:Yup.number()
+        .integer('Must be a round number')
+        .concat( param.required ? Yup.number().required() : null )
+        .concat( param.minValue !== null ? Yup.number().min(param.minValue) : null )
+        .concat( param.maxValue !== null ? Yup.number().max(param.maxValue) : null )
+        .typeError('Please type a number'),
+      });
+      parametersSchema = parametersSchema.concat(validationObject);
+    }
+  });
 
-const InterventionParameters = (props) => {
-  const { intervention, handleChangeParameters } = props;
-  const [interventionType, setIntervention] = useState(intervention.type);
-  const [allParameters, setAllParameters] = useState([]);
-  
-  // If intervention type has changed, reset parameters state
-  if(interventionType !== intervention.type) {
-    const newParameters = [];
-    intervention.parameters.forEach((parameter)=> newParameters.push({id: parameter.id, value:''}));
-    setAllParameters(newParameters);
-    setIntervention(intervention.type);
-  }
+  return type && (
+    <Formik 
+      initialValues={initialValues}
+      validationSchema={parametersSchema}
+      onSubmit={
+        (values) => {
+        onSubmit(values);
+      }}
+    >
+        {({
+         errors,
+         touched,
+         handleChange,
+         handleBlur,
+         handleSubmit,
+         isSubmitting,
+         setFieldValue,
+       }) => (
+         <Form>
+        <ParametersHolder>
+          {parameters?.map((parameter)=>(
+            <FormGroup key={parameter.id}>
+              { parameter.__typename === 'InterventionIntParameter' && (
+                <InputWrapper>
+                  <Label for={`${parameter.id}Field`}>
+                    { parameter.description }
+                    { parameter.required && <Required> *</Required>}
+                  </Label>
+                  <Input
+                    type="text"
+                    id={`${parameter.id}Field`}
+                    name={parameter.id}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    invalid={Boolean(errors[parameter.id])}
+                  />
+                  {errors[parameter.id] && touched[parameter.id] ? (
+                    <FormFeedback>{errors[parameter.id]}</FormFeedback>
+                  ) : null}
+                </InputWrapper>
+              )}
 
-  // Update the changed parameter in state array
-  const handleInputsChange = (event) => {
-    const currentParameters = allParameters;
-    const changed = allParameters.findIndex((element) => element.id === event.id);
-    currentParameters[changed] = event;
-    setAllParameters(currentParameters);
-    handleChangeParameters(currentParameters);
-  };
-
-  return (intervention.parameters.length > 0) ? (
-      <ParametersHolder>
-      {intervention.parameters.map((parameter)=>(
-        <ParameterInput
-          parameter={parameter}
-          key={parameter.id}
-          onChangeParameter={handleInputsChange}
-          intervention={intervention.id}
-        />
-      ))}
-      </ParametersHolder>
-    ) : (
-      <></>
+              { parameter.__typename === 'InterventionChoiceParameter' && (
+                <InputWrapper>
+                  <Label for={`${parameter.id}Field`}>
+                    { parameter.description }
+                    { parameter.required && <small>*</small>}
+                  </Label>
+                  <CustomInput
+                    type="select"
+                    id={`${parameter.id}Field`}
+                    name={parameter.id}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                  >
+                    <option value="">Select</option>
+                    { parameter.choices && parameter.choices.map((choice) => (
+                      <option
+                        key={choice.id}
+                        value={choice.id}
+                      >
+                          { choice.label }
+                      </option>
+                    ))}
+                  </CustomInput>
+                </InputWrapper>
+              )}
+            </FormGroup>
+          ))}
+          <SubmitWrapper>
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              color="primary"
+            >Add</Button>
+          </SubmitWrapper>
+        </ParametersHolder>
+         </Form>
+        )}
+    </Formik>
     )
 };
 
 const AddIntervention = (props) => {
   const { interventions } = props;
 
-  const [startDate, setStartDate] = useState(new Date());
+  const [date, setDate] = useState(new Date());
   const [activeIntervention, setActiveIntervention] = useState('');
-  const [parameters, setParameters] = useState([]);
 
   function handleInterventionChange(e) {
     setActiveIntervention(e.target.value);
-    setParameters([]);
   }
 
-  function handleParametersChange(e) {
-    setParameters(e);
-  }
+  const serializeInputs = (inputs, interventionType) => {
+    let params = [];
+    const interventionParameters = interventions.find((element) => element.type === interventionType )?.parameters;
 
-  const handleSubmit = (evt) => {
-    evt.preventDefault();
+    for (const [key, value] of Object.entries(inputs)) {
+      const parameterType = interventionParameters?.find((element) => element.id === key);
+      if (parameterType) {
+        if (parameterType.__typename === 'InterventionChoiceParameter') params.push({id: key, choice: value})
+        else params.push({id: key, value: value})
+      }
+    }
+
+    return params;
+  };
+
+  const handleSubmit = (values) => {
     const newIntervention = {
       type: activeIntervention,
-      date: startDate,
-      parameters: parameters,
+      date: dayjs(date).format('YYYY-MM-DD'),
+      parameters: serializeInputs(values, activeIntervention),
     }
-    console.log(`Adding intervention`);
+    setActiveIntervention('');
+    console.log(`Posting new intervention`);
     console.log(newIntervention);
   }
 
   return (
     <DashCard>
       <h5>Add new event</h5>
-      <form onSubmit={handleSubmit}>
       <FormRow>
         <InputWrapper>
           <CustomInput
@@ -190,19 +227,20 @@ const AddIntervention = (props) => {
           </CustomInput>
         </InputWrapper>
         <InputWrapper>
-          <DatePicker selected={startDate} onChange={date => setStartDate(date)} />
-        </InputWrapper>
-        <InputWrapper>
-          <Button type="submit">Add</Button>
+          <DatePicker
+            selected={date}
+            onChange={date => setDate(date)}
+            dateFormat="dd.MM.yyyy"
+          />
         </InputWrapper>
       </FormRow>
       <FormRow>
-        {activeIntervention && <InterventionParameters
-            intervention={interventions.find((element) => element.type === activeIntervention)}
-            handleChangeParameters={handleParametersChange}
-          /> }
+        <InterventionForm
+          type={activeIntervention}
+          parameters={interventions.find((element) => element.type === activeIntervention)?.parameters}
+          onSubmit={handleSubmit}
+        />
       </FormRow>
-      </form>
     </DashCard>
   );
 };
