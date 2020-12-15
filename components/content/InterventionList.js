@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import dayjs from 'dayjs';
+import { Link } from 'i18n';
 import { gql, useMutation } from "@apollo/client";
 import { Table, Button } from 'reactstrap';
 import DashCard from 'components/general/DashCard';
@@ -112,7 +113,8 @@ const InterventionList = (props) => {
 
   return (
     <DashCard>
-      <h5>Events</h5>
+      <h3>Scenario</h3>
+      <Link href="/">See outcome</Link>
       <Button size="sm" className="float-right mb-3" onClick={resetInterventions}>Reset Scenario</Button>
       <Table hover size="sm">
         <thead>

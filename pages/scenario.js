@@ -56,7 +56,7 @@ const GET_INTERVENTIONS = gql`
     }
   }
 `;
-export default function Events() {
+export default function Scenario() {
   const { t, i18n } = useTranslation(['common']);
   const { loading, error, data } = useQuery(GET_INTERVENTIONS);
   const { loading: loadingActive, error: errorActive, data: dataActive, refetch } = useQuery(GET_ACTIVE_INTERVENTIONS);
@@ -90,6 +90,6 @@ export default function Events() {
   )
 }
 
-Events.getInitialProps = async () => ({
+Scenario.getInitialProps = async () => ({
   namespacesRequired: ['common'],
 })

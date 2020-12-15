@@ -44,10 +44,6 @@ const LanguageSwitch = styled.div`
 
 const NavItem = styled(BSNavItem)`
 
-  ${({ main }) => main && `
-    font-weight: bold;
-  `}
-
   > a {
     display: block;
     padding: 0.5rem 1rem;
@@ -76,11 +72,11 @@ const SideBarNav = ({ children }) => {
         <small><span className="badge badge-secondary">v2.0-dev</span></small>
       </SideHeader>
       <Nav vertical>
-        <NavItem main={true}>
-          <Link href="/" active>Scenario</Link>
+        <NavItem>
+          <Link href="/" active>Outcome</Link>
         </NavItem>
         <NavItem>
-          <Link href="/events">Events</Link>
+          <Link href="/scenario">Scenario</Link>
         </NavItem>
         <NavItem disabled={true}>
           <Link href="#">Disease parameters</Link>
