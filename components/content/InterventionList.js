@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import dayjs from 'dayjs';
 import { Link } from 'i18n';
 import { gql, useMutation } from "@apollo/client";
-import { Table, Button } from 'reactstrap';
+import { Table, Button, UncontrolledCollapse } from 'reactstrap';
 import DashCard from 'components/general/DashCard';
 
 const HeaderCell = styled.th`
@@ -83,8 +83,30 @@ const RESET_INTERVENTIONS = gql`
   }
 `;
 
+const InterventionRow = (props) => {
+  const { event, handleDelete } = props;
+
+  return (
+    <tr>
+      <TableCell><Button close onClick={(e) => handleDelete(event.id, e)}/></TableCell>
+      <TableCell className={event.type}></TableCell>
+      <TableCell>
+        { event.description }
+        <DisplayChoiceParameters parameters={event.parameters} />
+        </TableCell>
+      <TableCell>
+        <DisplayValueParameters parameters={event.parameters} />
+      </TableCell>
+      <TableCell numeric>
+        { dayjs(event.date).format('DD.MM.YYYY') }
+      </TableCell>
+    </tr>
+  )
+}
+
 const InterventionList = (props) => {
-  const { interventions: rawInterventions, updateList } = props;
+  const { interventions, updateList } = props;
+  const today = new Date();
 
   const [deleteIntervention] = useMutation(DELETE_INTERVENTION, {
     onCompleted({data}) {
@@ -104,11 +126,16 @@ const InterventionList = (props) => {
     deleteIntervention({variables: { id }});
   };
 
-  let interventions = [];
+  let pastInterventions = [];
+  let futureInterventions = [];
 
-  if (rawInterventions) {
-    interventions = rawInterventions.map((intervention)=>intervention);
-    interventions.sort((a, b) => (a.date > b.date) ? 1 : -1);
+  if (interventions) {
+    pastInterventions = interventions
+      .filter((intervention) => dayjs(intervention.date) < today )
+      .sort((a, b) => (a.date > b.date) ? 1 : -1);
+    futureInterventions = interventions
+      .filter((intervention) => dayjs(intervention.date) >= today )
+      .sort((a, b) => (a.date > b.date) ? 1 : -1);
   }
 
   return (
@@ -125,24 +152,33 @@ const InterventionList = (props) => {
             <HeaderCell>Value</HeaderCell>
             <HeaderCell medium={true} numeric>Date</HeaderCell>
           </tr>
-          </thead>
-          <tbody>
-            { interventions && interventions.map((intervention) =>
-            <tr key={intervention.id}>
-              <TableCell><Button close onClick={(e) => handleDelete(intervention.id, e)}/></TableCell>
-              <TableCell className={intervention.type}></TableCell>
-              <TableCell>
-                { intervention.description }
-                <DisplayChoiceParameters parameters={intervention.parameters} />
-                </TableCell>
-              <TableCell>
-                <DisplayValueParameters parameters={intervention.parameters} />
-              </TableCell>
-              <TableCell numeric>
-                { dayjs(intervention.date).format('DD.MM.YYYY') }
-              </TableCell>
-            </tr> )}
-          </tbody>
+        </thead>
+        <tbody>
+          <tr>
+            <th colSpan="2">+</th>
+            <th colSpan="3" id="pastToggler">
+              <a href="#pastToggler">Past events ({ pastInterventions.length })</a>
+            </th>
+          </tr>
+        </tbody>
+        <UncontrolledCollapse toggler="#pastToggler" tag="tbody" defaultOpen={false}>
+          { pastInterventions && pastInterventions.map((intervention) =>
+            <InterventionRow event={intervention} handleDelete={handleDelete} key={intervention.id} />
+          )}
+        </UncontrolledCollapse>
+        <tbody>
+          <tr>
+            <th colSpan="2">+</th>
+            <th colSpan="3" id="futureToggler">
+              <a href="#futureToggler">Future events ({ futureInterventions.length })</a>
+            </th>
+          </tr>
+        </tbody>
+        <UncontrolledCollapse toggler="#futureToggler" tag="tbody" defaultOpen={true}>
+          { futureInterventions && futureInterventions.map((intervention) =>
+            <InterventionRow event={intervention} handleDelete={handleDelete} key={intervention.id} />
+          )}
+        </UncontrolledCollapse>
       </Table>
     </DashCard>
   );
