@@ -6,10 +6,14 @@ const DynamicPlot = dynamic(() => import('react-plotly.js'),
 
 
 function MetricsGraph(props) {
-  const { dailyMetrics, shownMetrics, title } = props;
+  const { dailyMetrics, shownMetrics, title, validationMetrics } = props;
   const { dates, metrics } = dailyMetrics;
 
-  const metricsByType = new Map(metrics.map(m => [m.type, m]));
+  let metricsByType = new Map(metrics.map(m => [m.type, m]));
+  if(typeof validationMetrics !== 'undefined' && validationMetrics.metrics){
+    const valMetricsByType = new Map(validationMetrics.metrics.map(m => [m.type, m]));
+    metricsByType = new Map([...metricsByType, ...valMetricsByType])
+  }
 
   let traces = shownMetrics.map((m) => {
     const metric = metricsByType.get(m.type);
@@ -17,12 +21,13 @@ function MetricsGraph(props) {
       throw new Error(`Unsupported metric: ${m.type}`)
     }
     const values = metric.isInteger ? metric.intValues : metric.floatValues;
+    const mode = metric.isSimulated ? 'lines': 'markers';
 
     return {
       y: values,
       x: dates,
       type: 'scatter',
-      mode: 'lines',
+      mode: mode,
       marker: {
         color: metric.color,
       },

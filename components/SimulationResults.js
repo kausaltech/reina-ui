@@ -5,7 +5,7 @@ import { gql, useQuery, useMutation } from "@apollo/client";
 import { Container, Row, Col } from 'reactstrap';
 import KeyIndicator from 'components/content/KeyIndicator';
 import PopulationGraph from 'components/charts/PopulationGraph';
-/* import ValidationGraph from 'components/charts/ValidationGraph';*/
+import ValidationGraph from 'components/charts/ValidationGraph';
 import HealthcareCapacityGraph from 'components/charts/HealthcareCapacityGraph';
 
 
@@ -23,11 +23,25 @@ const GET_SIMULATION_RESULTS = gql`
           intValues
           floatValues
           isInteger
+          isSimulated
         }
+      }
+    }
+    validationMetrics {
+      dates
+      metrics {
+          type
+          label
+          unit
+          color
+          intValues
+          isInteger
+          isSimulated
       }
     }
   }
 `;
+
 
 
 function SimulationResults({ runId }) {
@@ -48,13 +62,14 @@ function SimulationResults({ runId }) {
     return <div>Errrrrrorr in starting simulation</div>
   }
 
-  const { simulationResults } = data;
+  const { simulationResults, validationMetrics } = data;
   const { predictedMetrics } = simulationResults;
 
   if (simulationResults.finished) {
     console.log('simulation run done, stop polling');
     stopPolling();
   }
+  console.log("Results", simulationResults, validationMetrics)
 
   return (
     <Container className="mt-4">
@@ -91,13 +106,14 @@ function SimulationResults({ runId }) {
           <HealthcareCapacityGraph dailyMetrics={predictedMetrics} />
         </Col>
       </Row>
-      {/* Validation needs the confirmed data as well
       <Row className="mx-2">
         <Col md="12">
-          <ValidationGraph dailyMetrics={data.simulationResults.predictedMetrics} />
+          <ValidationGraph
+            dailyMetrics={predictedMetrics}
+            validationMetrics={validationMetrics}
+          />
         </Col>
       </Row>
-      */}
     </Container>
   )
 }
