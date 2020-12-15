@@ -16,17 +16,16 @@ const GET_ACTIVE_INTERVENTIONS = gql`
       description
       parameters {
         id
+        description
         ... on InterventionIntParameter {
-          id
           value
           unit
         }
         ... on InterventionChoiceParameter {
-          choices {
+          choice {
             id
             label
           }
-          required
         }
       }
     }
