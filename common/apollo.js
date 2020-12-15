@@ -10,12 +10,12 @@ function createApolloClient() {
              process.env.SERVER_GRAPHQL_ENDPOINT:
              process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT);
 
-  console.log(uri);
   // console.log("endpoint...", uri)
   return new ApolloClient({
     ssrMode: ssrMode,
     link: new HttpLink({
       uri: uri || 'http://localhost:5000/graphql',
+      credentials: 'include',
     }),
     cache: new InMemoryCache(),
   });
