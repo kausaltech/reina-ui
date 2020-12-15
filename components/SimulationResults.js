@@ -5,6 +5,7 @@ import { gql, useQuery, useMutation } from "@apollo/client";
 import { Container, Row, Col } from 'reactstrap';
 import KeyIndicator from 'components/content/KeyIndicator';
 import PopulationGraph from 'components/charts/PopulationGraph';
+import EpidemicParametersGraph from 'components/charts/EpidemicParametersGraph';
 import ValidationGraph from 'components/charts/ValidationGraph';
 import HealthcareCapacityGraph from 'components/charts/HealthcareCapacityGraph';
 
@@ -104,6 +105,11 @@ function SimulationResults({ runId }) {
       <Row className="mx-2">
         <Col md="12">
           <HealthcareCapacityGraph dailyMetrics={predictedMetrics} />
+        </Col>
+      </Row>
+      <Row className="mx-2">
+        <Col md="12">
+          <EpidemicParametersGraph dailyMetrics={predictedMetrics} />
         </Col>
       </Row>
       <Row className="mx-2">
