@@ -25,6 +25,8 @@ function MetricsGraph(props) {
     const { metric, dates } = metaMetric;
     const values = metric.isInteger ? metric.intValues : metric.floatValues;
     const mode = metric.isSimulated ? 'lines': 'markers';
+    // const unitStr = metric.unit ? ` ${metric.unit}` : '';
+    const unitStr = '';
 
     return {
       y: values,
@@ -34,6 +36,7 @@ function MetricsGraph(props) {
       marker: {
         color: metric.color,
       },
+      hovertemplate: metric.isInteger ? `%{y}${unitStr}` : `%{y:.2f}${unitStr}`,
       name: metric.label,
       visible: m.visible,
     };
