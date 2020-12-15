@@ -1,63 +1,20 @@
 import React from 'react';
-import dynamic from 'next/dynamic';
+import MetricsGraph from './MetricsGraph';
 
-// Plotly doesn't work with SSR
-const DynamicPlot = dynamic(() => import('react-plotly.js'),
-    { ssr: false });
+function HealthcareCapacityGraph(props) {
+  const { dailyMetrics } = props;
 
-class HealthcareCapacityGraph extends React.Component {
-  render() {
-
-    let metrics = this.props.dailyMetrics.metrics;
-
-    //console.log(metrics)
-    let baseData = [
-        {
-            y: metrics.find(m => m.id == 'available_hospital_beds').values,
-            name:'Hospital beds',
-            marker: {color: 'yellow'},
-        },
-        {
-            y: metrics.find(m => m.id == 'available_icu_units').values,
-            name:'ICU units',
-            marker: {color: 'purple'},
-        },
-        /*
-        {
-            y: metrics.find(m => m.id == 'hospitalized').values,
-            name:'Hospitalized',
-            marker: {color: 'orange'},
-        },
-        {
-            y: metrics.find(m => m.id == 'in_icu').values,
-            name:'In ICU',
-            marker: {color: 'red'},
-        },*/
-    ]
-
-    let dates = this.props.dailyMetrics.dates;
-    let toTraces = function(baseData) {
-      return baseData.map((value) => {
-        return {
-          ...value,
-          x: dates,
-          type: 'scatter',
-          mode: 'lines',
-        };
-      });
-    };
-
-    return (
-        <div>
-        <DynamicPlot
-            data={ toTraces(baseData) }
-            layout={ {title: 'Free capacity in the healthcare system', autosize: true} }
-            useResizeHandler={ true }
-            style={ {width: "100%"} }
-        />
-        </div>
-    );
-  }
+  const shownMetrics = [
+    { type: 'AVAILABLE_HOSPITAL_BEDS' },
+    { type: 'AVAILABLE_ICU_UNITS' },
+  ]
+  return (
+    <MetricsGraph
+      dailyMetrics={dailyMetrics}
+      shownMetrics={shownMetrics}
+      title="Free capacity in the healthcare system" 
+    />
+  )   
 }
 
 export default HealthcareCapacityGraph;

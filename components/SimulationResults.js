@@ -16,8 +16,13 @@ const GET_SIMULATION_RESULTS = gql`
       predictedMetrics {
         dates
         metrics {
-          id
-          values
+          type
+          label
+          unit
+          color
+          intValues
+          floatValues
+          isInteger
         }
       }
     }
@@ -44,6 +49,7 @@ function SimulationResults({ runId }) {
   }
 
   const { simulationResults } = data;
+  const { predictedMetrics } = simulationResults;
 
   if (simulationResults.finished) {
     console.log('simulation run done, stop polling');
@@ -77,12 +83,12 @@ function SimulationResults({ runId }) {
       </Row>
       <Row className="mx-2">
         <Col md="12">
-          <PopulationGraph dailyMetrics={data.simulationResults.predictedMetrics} />
+          <PopulationGraph dailyMetrics={predictedMetrics} />
         </Col>
       </Row>
       <Row className="mx-2">
         <Col md="12">
-          <HealthcareCapacityGraph dailyMetrics={data.simulationResults.predictedMetrics} />
+          <HealthcareCapacityGraph dailyMetrics={predictedMetrics} />
         </Col>
       </Row>
       {/* Validation needs the confirmed data as well
