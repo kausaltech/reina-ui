@@ -43,13 +43,24 @@ const LanguageSwitch = styled.div`
 `;
 
 const NavItem = styled(BSNavItem)`
+
+  ${({ main }) => main && `
+    font-weight: bold;
+  `}
+
   > a {
     display: block;
     padding: 0.5rem 1rem;
     color: ${(props)=>props.theme.themeColors.light};
+    ${({ disabled }) => disabled && `
+      opacity: .3;
+    `}
 
     &:hover {
       color: ${(props)=>props.theme.brandLight};
+      ${({ disabled }) => disabled && `
+        text-decoration: none;
+      `}
     }
   }
 `;
@@ -65,19 +76,19 @@ const SideBarNav = ({ children }) => {
         <small><span className="badge badge-secondary">v2.0-dev</span></small>
       </SideHeader>
       <Nav vertical>
-        <NavItem>
+        <NavItem main={true}>
           <Link href="/" active>Scenario</Link>
         </NavItem>
         <NavItem>
           <Link href="/events">Events</Link>
         </NavItem>
-        <NavItem>
+        <NavItem disabled={true}>
           <Link href="#">Disease parameters</Link>
         </NavItem>
-        <NavItem>
+        <NavItem disabled={true}>
           <Link href="#">Region</Link>
         </NavItem>
-        <NavItem>
+        <NavItem disabled={true}>
           <Link href="#">About REINA</Link>
         </NavItem>
       </Nav>

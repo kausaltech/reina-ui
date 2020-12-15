@@ -1,14 +1,20 @@
 import { useTranslation } from '../i18n';
 import { i18n, Link } from 'i18n';
 import { I18nContext } from 'next-i18next';
+import styled from 'styled-components';
 import { gql, useQuery, useMutation } from "@apollo/client";
-import { Container, Row, Col } from 'reactstrap';
-import KeyIndicator from 'components/content/KeyIndicator';
+import { Container, Row, Col, Spinner } from 'reactstrap';
+import DashCard from 'components/general/DashCard';
 import PopulationGraph from 'components/charts/PopulationGraph';
 import EpidemicParametersGraph from 'components/charts/EpidemicParametersGraph';
 import ValidationGraph from 'components/charts/ValidationGraph';
 import HealthcareCapacityGraph from 'components/charts/HealthcareCapacityGraph';
 
+const UpdateIndicator = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 0 1rem 1rem;
+`;
 
 const GET_SIMULATION_RESULTS = gql`
   query GetSimulationResults($runId: ID!) {
@@ -56,7 +62,7 @@ function SimulationResults({ runId }) {
   });
 
   if (loading) {
-    return <div>Spinner2</div>
+    return <Spinner style={{ width: '3rem', height: '3rem' }} />
   }
   if (error) {
     console.log(error);
@@ -75,49 +81,44 @@ function SimulationResults({ runId }) {
   return (
     <Container className="mt-4">
       <Row className="mx-2">
-        <Col md="4" className="px-2">
-            <KeyIndicator
-              title={t("restriction-day-index")}
-              value="155"
-              info={t("restriction-day-index-info")}
+        <Col md="12">
+          <DashCard>
+            <h3>Scenario</h3>
+            <h5>COVID-19 epidemic model: Varsinais-Suomen sairaanhoitopiiri</h5>
+            <Link href="/events">Edit scenario events</Link>
+          </DashCard>
+          { !simulationResults.finished && <UpdateIndicator><Spinner type="grow" color="primary" size="sm" /><div className="ml-2">Updating results</div></UpdateIndicator> }
+        </Col>
+      </Row>
+      <Row className="mx-2">
+        <Col md="12">
+          <DashCard>
+            <PopulationGraph dailyMetrics={predictedMetrics} />
+          </DashCard>
+        </Col>
+      </Row>
+      <Row className="mx-2">
+        <Col md="12">
+          <DashCard>
+            <HealthcareCapacityGraph dailyMetrics={predictedMetrics} />
+          </DashCard>
+        </Col>
+      </Row>
+      <Row className="mx-2">
+        <Col md="12">
+          <DashCard>
+            <EpidemicParametersGraph dailyMetrics={predictedMetrics} />
+          </DashCard>
+        </Col>
+      </Row>
+      <Row className="mx-2">
+        <Col md="12">
+          <DashCard>
+            <ValidationGraph
+              dailyMetrics={predictedMetrics}
+              validationMetrics={validationMetrics}
             />
-        </Col>
-        <Col md="4" className="px-2">
-            <KeyIndicator
-              title={t("restriction-day-index")}
-              value="155"
-              info={t("restriction-day-index-info")}
-            />
-        </Col>
-        <Col md="4" className="px-2">
-            <KeyIndicator
-              title={t("restriction-day-index")}
-              value="155"
-              info={t("restriction-day-index-info")}
-            />
-        </Col>
-      </Row>
-      <Row className="mx-2">
-        <Col md="12">
-          <PopulationGraph dailyMetrics={predictedMetrics} />
-        </Col>
-      </Row>
-      <Row className="mx-2">
-        <Col md="12">
-          <HealthcareCapacityGraph dailyMetrics={predictedMetrics} />
-        </Col>
-      </Row>
-      <Row className="mx-2">
-        <Col md="12">
-          <EpidemicParametersGraph dailyMetrics={predictedMetrics} />
-        </Col>
-      </Row>
-      <Row className="mx-2">
-        <Col md="12">
-          <ValidationGraph
-            dailyMetrics={predictedMetrics}
-            validationMetrics={validationMetrics}
-          />
+          </DashCard>
         </Col>
       </Row>
     </Container>
