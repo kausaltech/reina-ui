@@ -58,8 +58,13 @@ const GET_INTERVENTIONS = gql`
 `;
 export default function Events() {
   const { t, i18n } = useTranslation(['common']);
-  const { loading, error, data, refetch } = useQuery(GET_INTERVENTIONS);
-  const { loading: loadingActive, error: errorActive, data: dataActive } = useQuery(GET_ACTIVE_INTERVENTIONS);
+  const { loading, error, data } = useQuery(GET_INTERVENTIONS);
+  const { loading: loadingActive, error: errorActive, data: dataActive, refetch } = useQuery(GET_ACTIVE_INTERVENTIONS);
+
+  const updateList = () => {
+    console.log('Updating list');
+    refetch();
+  };
 
   return (
     <Layout>
@@ -71,10 +76,12 @@ export default function Events() {
           <Col>
             { loading ?
               <Spinner style={{ width: '3rem', height: '3rem' }} /> :
-              <AddIntervention interventions={data ? data.availableInterventions : []} handleSuccess={refetch} /> }
+              <AddIntervention interventions={data ? data.availableInterventions : []} handleSuccess={updateList} /> }
             { loadingActive ?
               <Spinner style={{ width: '3rem', height: '3rem' }} /> :
-              <InterventionList interventions={dataActive ? dataActive.activeInterventions : []} />}
+              <InterventionList
+                interventions={dataActive ? dataActive.activeInterventions : []}
+                updateList={updateList} />}
           </Col>
         </Row>
       </Container>

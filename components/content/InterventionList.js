@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import dayjs from 'dayjs';
+import { gql, useMutation } from "@apollo/client";
 import { Table, Button } from 'reactstrap';
 import DashCard from 'components/general/DashCard';
 
@@ -38,12 +39,20 @@ const TableCell = styled.td`
   `}
 `;
 
+const DisplayParameter = styled.span`
+  margin-left: .5em;
+
+  .unit {
+    opacity: 0.5;
+  }
+`;
+
 // TODO: Handle displaying special case values ie. (min_age-max_age)
 const DisplayValueParameters = (props) => {
   const { parameters } = props;
   return (
     <>
-      { parameters.map((param) => param.__typename === 'InterventionIntParameter' && <div key={param.id}>{param.value} {param.unit}</div>)}
+      { parameters.map((param) => param.__typename === 'InterventionIntParameter' && <DisplayParameter key={param.id} >{param.value} <span className="unit">{param.unit}</span></DisplayParameter>)}
     </>
   )
 };
@@ -57,8 +66,25 @@ const DisplayChoiceParameters = (props) => {
   )
 };
 
+const DELETE_INTERVENTION = gql`
+  mutation DeleteIntervention($id: ID!) {
+    deleteIntervention(interventionId: $id) {
+      ok
+    }
+  }
+`;
+
 const InterventionList = (props) => {
-  const { interventions: rawInterventions } = props;
+  const { interventions: rawInterventions, updateList } = props;
+
+  const [deleteIntervention] = useMutation(DELETE_INTERVENTION, {
+    onCompleted({data}) {
+      setActiveIntervention('');
+      updateList();
+      console.log(`Intervention deleted`);
+    }
+  });
+
   let interventions = [];
 
   if (rawInterventions) {
@@ -75,7 +101,7 @@ const InterventionList = (props) => {
             <HeaderCell small={true}></HeaderCell>
             <HeaderCell small={true}></HeaderCell>
             <HeaderCell>Event</HeaderCell>
-            <HeaderCell medium={true} numeric>Value</HeaderCell>
+            <HeaderCell>Value</HeaderCell>
             <HeaderCell medium={true} numeric>Date</HeaderCell>
           </tr>
           </thead>
@@ -88,7 +114,7 @@ const InterventionList = (props) => {
                 { intervention.description }
                 <DisplayChoiceParameters parameters={intervention.parameters} />
                 </TableCell>
-              <TableCell numeric>
+              <TableCell>
                 <DisplayValueParameters parameters={intervention.parameters} />
               </TableCell>
               <TableCell numeric>

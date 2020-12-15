@@ -85,14 +85,22 @@ const InterventionForm = (props) => {
     }
   });
 
+  const handleSubmit = async (values, { resetForm }) => {
+    try {
+      onSubmit(values);
+      resetForm();
+    }
+    catch (err) {
+      console.log(err);
+      setErr(err.message);
+    }
+  };
+
   return type && (
     <Formik 
       initialValues={initialValues}
       validationSchema={parametersSchema}
-      onSubmit={
-        (values) => {
-        onSubmit(values);
-      }}
+      onSubmit={handleSubmit}
     >
         {({
          errors,
