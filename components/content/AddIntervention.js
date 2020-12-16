@@ -2,7 +2,7 @@ import {useState, useEffect} from 'react';
 import { gql, useMutation } from "@apollo/client";
 import styled from 'styled-components';
 import dayjs from 'dayjs';
-import {FormGroup, Label, Input, CustomInput, Button, FormFeedback} from 'reactstrap';
+import {FormGroup, Label, Input, CustomInput, Button, FormFeedback, Spinner} from 'reactstrap';
 import { Formik, Form, useFormikContext } from 'formik';
 import * as Yup from 'yup';
 import DatePicker from 'react-datepicker';
@@ -33,7 +33,7 @@ const Required = styled.small`
 `;
 
 const SubmitWrapper = styled.div`
-  margin: 24px 0;
+  margin: 18px 0 24px 18px;
 `;
 
 const ParametersHolder = styled.div`
@@ -44,15 +44,6 @@ const ParametersHolder = styled.div`
   border-radius: ${(props) => props.theme.cardBorderRadius};
   background-color: ${(props) => props.theme.themeColors.light};
 `;
-
-const ResetForm = (props) => {
-  const { actions } = useFormikContext();
-
-  useEffect(() => {
-    actions.resetForm();
-  }, [props.type]);
-  return null;
-}
 
 const InterventionForm = (props) => {
 
@@ -186,7 +177,7 @@ const ADD_INTERVENTION = gql`
 
 
 const AddIntervention = (props) => {
-  const { interventions, handleSuccess } = props;
+  const { interventions, handleSuccess, loading } = props;
 
   const [date, setDate] = useState(new Date());
   const [activeIntervention, setActiveIntervention] = useState('');
@@ -229,45 +220,49 @@ const AddIntervention = (props) => {
   }
 
   return (
-    <DashCard>
+    <DashCard className="shadow-lg">
       <h5>Add new event</h5>
-      { addingIntervention && <h6>Adding new intervention</h6> }
-      { addedIntervention && <h6>New intervention set</h6> }
-      <FormRow>
-        <InputWrapper>
-          <CustomInput
-            type="select"
-            id="interventionTypeField"
-            name="interventionType"
-            value={activeIntervention}
-            onChange={handleInterventionChange}
-          >
-            <option value="">Select event</option>
-            { interventions && interventions.map((intervention) => (
-              <option
-                key={intervention.type}
-                value={intervention.type}
-              >
-                  { intervention.description }
-              </option>
-            ))}
-          </CustomInput>
-        </InputWrapper>
-        <InputWrapper>
-          <DatePicker
-            selected={date}
-            onChange={date => setDate(date)}
-            dateFormat="dd.MM.yyyy"
-          />
-        </InputWrapper>
-      </FormRow>
-      <FormRow>
-        <InterventionForm
-          type={activeIntervention}
-          parameters={interventions.find((element) => element.type === activeIntervention)?.parameters}
-          onSubmit={handleSubmit}
-        />
-      </FormRow>
+      { loading ?
+        <div className="d-flex justify-content-center align-items-center w-100 my-5"><div><Spinner type="grow" color="secondary" /></div></div>
+        : (
+          <div>
+            <FormRow>
+              <InputWrapper>
+                <CustomInput
+                  type="select"
+                  id="interventionTypeField"
+                  name="interventionType"
+                  value={activeIntervention}
+                  onChange={handleInterventionChange}
+                >
+                  <option value="">Select event</option>
+                  { interventions && interventions.map((intervention) => (
+                    <option
+                      key={intervention.type}
+                      value={intervention.type}
+                    >
+                        { intervention.description }
+                    </option>
+                  ))}
+                </CustomInput>
+              </InputWrapper>
+              <InputWrapper>
+                <DatePicker
+                  selected={date}
+                  onChange={date => setDate(date)}
+                  dateFormat="dd.MM.yyyy"
+                />
+              </InputWrapper>
+            </FormRow>
+            <FormRow>
+              <InterventionForm
+                type={activeIntervention}
+                parameters={interventions.find((element) => element.type === activeIntervention)?.parameters}
+                onSubmit={handleSubmit}
+              />
+            </FormRow>
+          </div>
+        )}
     </DashCard>
   );
 };

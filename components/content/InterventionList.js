@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import dayjs from 'dayjs';
 import { Link } from 'i18n';
 import { gql, useMutation } from "@apollo/client";
-import { Table, Button, UncontrolledCollapse } from 'reactstrap';
+import { Table, Button, UncontrolledCollapse, Spinner } from 'reactstrap';
 import DashCard from 'components/general/DashCard';
 
 const HeaderCell = styled.th`
@@ -105,7 +105,7 @@ const InterventionRow = (props) => {
 }
 
 const InterventionList = (props) => {
-  const { interventions, updateList } = props;
+  const { interventions, updateList, loading } = props;
   const today = new Date();
 
   const [deleteIntervention] = useMutation(DELETE_INTERVENTION, {
@@ -143,43 +143,47 @@ const InterventionList = (props) => {
       <h3>Scenario</h3>
       <Link href="/">See outcome</Link>
       <Button size="sm" className="float-right mb-3" onClick={resetInterventions}>Reset Scenario</Button>
-      <Table hover size="sm">
-        <thead>
-          <tr>
-            <HeaderCell small={true}></HeaderCell>
-            <HeaderCell small={true}></HeaderCell>
-            <HeaderCell>Event</HeaderCell>
-            <HeaderCell>Value</HeaderCell>
-            <HeaderCell medium={true} numeric>Date</HeaderCell>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <th colSpan="2">+</th>
-            <th colSpan="3" id="pastToggler">
-              <a href="#pastToggler">Past events ({ pastInterventions.length })</a>
-            </th>
-          </tr>
-        </tbody>
-        <UncontrolledCollapse toggler="#pastToggler" tag="tbody" defaultOpen={false}>
-          { pastInterventions && pastInterventions.map((intervention) =>
-            <InterventionRow event={intervention} handleDelete={handleDelete} key={intervention.id} />
-          )}
-        </UncontrolledCollapse>
-        <tbody>
-          <tr>
-            <th colSpan="2">+</th>
-            <th colSpan="3" id="futureToggler">
-              <a href="#futureToggler">Future events ({ futureInterventions.length })</a>
-            </th>
-          </tr>
-        </tbody>
-        <UncontrolledCollapse toggler="#futureToggler" tag="tbody" defaultOpen={true}>
-          { futureInterventions && futureInterventions.map((intervention) =>
-            <InterventionRow event={intervention} handleDelete={handleDelete} key={intervention.id} />
-          )}
-        </UncontrolledCollapse>
-      </Table>
+      { loading ?
+        <div className="d-flex justify-content-center align-items-center w-100 my-5"><div><Spinner type="grow" color="secondary" /></div></div>
+        : (
+        <Table hover size="sm">
+          <thead>
+            <tr>
+              <HeaderCell small={true}></HeaderCell>
+              <HeaderCell small={true}></HeaderCell>
+              <HeaderCell>Event</HeaderCell>
+              <HeaderCell>Value</HeaderCell>
+              <HeaderCell medium={true} numeric>Date</HeaderCell>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th colSpan="2">+</th>
+              <th colSpan="3" id="pastToggler">
+                <a href="#pastToggler">Past events ({ pastInterventions.length })</a>
+              </th>
+            </tr>
+          </tbody>
+          <UncontrolledCollapse toggler="#pastToggler" tag="tbody" defaultOpen={false}>
+            { pastInterventions && pastInterventions.map((intervention) =>
+              <InterventionRow event={intervention} handleDelete={handleDelete} key={intervention.id} />
+            )}
+          </UncontrolledCollapse>
+          <tbody>
+            <tr>
+              <th colSpan="2">+</th>
+              <th colSpan="3" id="futureToggler">
+                <a href="#futureToggler">Future events ({ futureInterventions.length })</a>
+              </th>
+            </tr>
+          </tbody>
+          <UncontrolledCollapse toggler="#futureToggler" tag="tbody" defaultOpen={true}>
+            { futureInterventions && futureInterventions.map((intervention) =>
+              <InterventionRow event={intervention} handleDelete={handleDelete} key={intervention.id} />
+            )}
+          </UncontrolledCollapse>
+        </Table>
+        )}
     </DashCard>
   );
 };

@@ -1,5 +1,6 @@
 import Head from 'next/head';
 import { gql, useQuery, useMutation } from "@apollo/client";
+import { Spinner } from 'reactstrap';
 import { useTranslation } from '../i18n';
 import SimulationResults from 'components/SimulationResults';
 import Layout from 'components/Layout';
@@ -30,7 +31,7 @@ export default function Home() {
   }
 
   if (loading || !data) {
-    return <div>Spinner</div>
+    return <div className="d-flex justify-content-center align-items-center vw-100 vh-100"><div><Spinner style={{ width: '3rem', height: '3rem' }} /></div></div>
   }
 
   console.log('got data', data);
@@ -39,7 +40,7 @@ export default function Home() {
   return (
     <Layout>
       <Head>
-        <title>REINA - Front page</title>
+        <title>REINA</title>
       </Head>
       <SimulationResults runId={runId} />
     </Layout>

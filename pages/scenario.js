@@ -74,14 +74,15 @@ export default function Scenario() {
       <Container className="mt-4" fluid="lg">
         <Row className="mx-2">
           <Col>
-            { loading ?
-              <Spinner style={{ width: '3rem', height: '3rem' }} /> :
-              <AddIntervention interventions={data ? data.availableInterventions : []} handleSuccess={updateList} /> }
-            { loadingActive ?
-              <Spinner style={{ width: '3rem', height: '3rem' }} /> :
+              <AddIntervention
+                interventions={data ? data.availableInterventions : []}
+                handleSuccess={updateList}
+                loading={loading}/>
               <InterventionList
                 interventions={dataActive ? dataActive.activeInterventions : []}
-                updateList={updateList} />}
+                updateList={updateList}
+                loading={loadingActive}
+              />
           </Col>
         </Row>
       </Container>
