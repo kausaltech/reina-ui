@@ -1,20 +1,14 @@
 import { useTranslation } from '../i18n';
 import { i18n, Link } from 'i18n';
-import { I18nContext } from 'next-i18next';
-import styled from 'styled-components';
 import { gql, useQuery, useMutation } from "@apollo/client";
 import { Container, Row, Col, Spinner } from 'reactstrap';
 import DashCard from 'components/general/DashCard';
+import Updating from 'components/general/Updating';
 import PopulationGraph from 'components/charts/PopulationGraph';
 import EpidemicParametersGraph from 'components/charts/EpidemicParametersGraph';
 import ValidationGraph from 'components/charts/ValidationGraph';
 import HealthcareCapacityGraph from 'components/charts/HealthcareCapacityGraph';
 
-const UpdateIndicator = styled.div`
-  display: flex;
-  align-items: center;
-  padding: 0 1rem 1rem;
-`;
 
 const GET_SIMULATION_RESULTS = gql`
   query GetSimulationResults($runId: ID!) {
@@ -87,12 +81,13 @@ function SimulationResults({ runId }) {
             <h5>COVID-19 epidemic model: Varsinais-Suomen sairaanhoitopiiri</h5>
             <Link href="/scenario">Edit scenario events</Link>
           </DashCard>
-          { !simulationResults.finished && <UpdateIndicator><Spinner type="grow" color="primary" size="sm" /><div className="ml-2">Updating results</div></UpdateIndicator> }
+          
         </Col>
       </Row>
       <Row className="mx-2">
         <Col md="12">
           <DashCard>
+            { !simulationResults.finished && <Updating /> }
             <PopulationGraph dailyMetrics={predictedMetrics} />
           </DashCard>
         </Col>
@@ -100,6 +95,7 @@ function SimulationResults({ runId }) {
       <Row className="mx-2">
         <Col md="12">
           <DashCard>
+            { !simulationResults.finished && <Updating /> }
             <HealthcareCapacityGraph dailyMetrics={predictedMetrics} />
           </DashCard>
         </Col>
@@ -107,6 +103,7 @@ function SimulationResults({ runId }) {
       <Row className="mx-2">
         <Col md="12">
           <DashCard>
+            { !simulationResults.finished && <Updating /> }
             <EpidemicParametersGraph dailyMetrics={predictedMetrics} />
           </DashCard>
         </Col>
@@ -114,6 +111,7 @@ function SimulationResults({ runId }) {
       <Row className="mx-2">
         <Col md="12">
           <DashCard>
+            { !simulationResults.finished && <Updating /> }
             <ValidationGraph
               dailyMetrics={predictedMetrics}
               validationMetrics={validationMetrics}
