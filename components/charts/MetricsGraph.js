@@ -1,4 +1,5 @@
 import dynamic from 'next/dynamic';
+import dayjs from 'dayjs';
 
 // Plotly doesn't work with SSR
 const DynamicPlot = dynamic(() => import('react-plotly.js'),
@@ -42,11 +43,52 @@ function MetricsGraph(props) {
     };
   });
 
+  // Adds text annonation on current day line. Not in use for now
+  const annotations = [
+    {
+      x: new dayjs().format('YYYY-MM-DD'),
+      y: 1,
+      xref: 'x',
+      yref: 'paper',
+      text: 'Today',
+      showarrow: true,
+      arrowhead: 0,
+      arrowcolor: '#999999',
+      ax: 0,
+      ay: -15,
+    }
+  ];
+
+  const shapes = [
+    {
+      type: 'line',
+      yref: 'paper',
+      x0: new dayjs().format('YYYY-MM-DD'),
+      y0: 0,
+      x1: new dayjs().format('YYYY-MM-DD'),
+      y1: 1,
+      line: {
+        color: '#999999',
+        width: 2,
+        dash: "dot",
+      }
+    },
+  ];
+
+  const layout = {
+    title,
+    autosize: true,
+    font: {
+      family: 'Inter',
+    },
+    shapes
+  }
+
   return (
     <div>
       <DynamicPlot
           data={ traces }
-          layout={ {title, autosize: true} }
+          layout={ layout }
           useResizeHandler={ true }
           style={ {width: "100%"} }
       />
