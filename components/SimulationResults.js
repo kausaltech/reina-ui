@@ -66,11 +66,16 @@ function SimulationResults({ runId }) {
   const { simulationResults, validationMetrics } = data;
   const { predictedMetrics } = simulationResults;
 
+  console.log("Results", simulationResults, validationMetrics)
+
+  if (!predictedMetrics.metrics.length) {
+    return <Spinner style={{ width: '3rem', height: '3rem' }} />
+  }
+
   if (simulationResults.finished) {
     console.log('simulation run done, stop polling');
     stopPolling();
   }
-  console.log("Results", simulationResults, validationMetrics)
 
   return (
     <Container className="mt-4" fluid="lg">
