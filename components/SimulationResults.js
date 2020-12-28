@@ -12,6 +12,11 @@ import HealthcareCapacityGraph from 'components/charts/HealthcareCapacityGraph';
 
 const GET_SIMULATION_RESULTS = gql`
   query GetSimulationResults($runId: ID!) {
+    area {
+      name
+      nameLong
+      totalPopulation
+    }
     simulationResults(runId: $runId) {
       finished
       predictedMetrics {
@@ -84,7 +89,8 @@ function SimulationResults({ runId }) {
         <Col md="12">
           <DashCard>
             <h3>Outcome</h3>
-            <h5>COVID-19 epidemic model: Varsinais-Suomen sairaanhoitopiiri</h5>
+            <h5>{data.area.nameLong}</h5>
+            <div>{`Population: ${data.area.totalPopulation}`}</div>
             <Link href="/scenario">Edit scenario events</Link>
           </DashCard>
           
