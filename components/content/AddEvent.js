@@ -45,7 +45,7 @@ const ParametersHolder = styled.div`
   background-color: ${(props) => props.theme.themeColors.light};
 `;
 
-const InterventionForm = (props) => {
+const EventForm = (props) => {
 
   const { type, parameters, onSubmit } = props;
 
@@ -57,13 +57,13 @@ const InterventionForm = (props) => {
     initialValues[param.id] = '';
 
     // add parameter to validation schema
-    if(param.__typename === 'InterventionChoiceParameter') {
+    if(param.__typename === 'EventChoiceParameter') {
       const validationObject = Yup.object().shape({
         [param.id]:Yup.string().concat( param.required ? Yup.string().required() : null ),
       });
       parametersSchema = parametersSchema.concat(validationObject);
     }
-    if(param.__typename === 'InterventionIntParameter') {
+    if(param.__typename === 'EventIntParameter') {
       const validationObject = Yup.object().shape({
         [param.id]:Yup.number()
         .integer('Must be a round number')
@@ -106,7 +106,7 @@ const InterventionForm = (props) => {
         <ParametersHolder>
           {parameters?.map((parameter)=>(
             <FormGroup key={parameter.id}>
-              { parameter.__typename === 'InterventionIntParameter' && (
+              { parameter.__typename === 'EventIntParameter' && (
                 <InputWrapper>
                   <Label for={`${parameter.id}Field`}>
                     { parameter.description }
@@ -126,7 +126,7 @@ const InterventionForm = (props) => {
                 </InputWrapper>
               )}
 
-              { parameter.__typename === 'InterventionChoiceParameter' && (
+              { parameter.__typename === 'EventChoiceParameter' && (
                 <InputWrapper>
                   <Label for={`${parameter.id}Field`}>
                     { parameter.description }
@@ -167,42 +167,42 @@ const InterventionForm = (props) => {
     )
 };
 
-const ADD_INTERVENTION = gql`
-  mutation AddNewIntervention($date: String!, $type: InverventionType!, $parameters: [InterventionInputParameter]) {
-    addIntervention(intervention: {date: $date, type: $type, parameters: $parameters}) {
+const ADD_EVENT = gql`
+  mutation AddNewEvent($date: String!, $type: InverventionType!, $parameters: [EventInputParameter]) {
+    addEvent(event: {date: $date, type: $type, parameters: $parameters}) {
         id
     }
   }
 `;
 
 
-const AddIntervention = (props) => {
-  const { interventions, handleSuccess, loading } = props;
+const AddEvent = (props) => {
+  const { events, handleSuccess, loading } = props;
 
   const [date, setDate] = useState(new Date());
-  const [activeIntervention, setActiveIntervention] = useState('');
-  const [submitIntervention, { data: addedIntervention, loading: addingIntervention }] = useMutation(ADD_INTERVENTION, {
+  const [activeEvent, setActiveEvent] = useState('');
+  const [submitEvent, { data: addedEvent, loading: addingEvent }] = useMutation(ADD_EVENT, {
     onCompleted({data}) {
-      setActiveIntervention('');
-      // TODO: This fires too early? Parent refetch does not get the added intervention
+      setActiveEvent('');
+      // TODO: This fires too early? Parent refetch does not get the added event
       handleSuccess();
-      console.log(`New intervention added`);
+      console.log(`New event added`);
       console.log(data);
     }
   });
 
-  function handleInterventionChange(e) {
-    setActiveIntervention(e.target.value);
+  function handleEventChange(e) {
+    setActiveEvent(e.target.value);
   }
 
-  const serializeInputs = (inputs, interventionType) => {
+  const serializeInputs = (inputs, eventType) => {
     let params = [];
-    const interventionParameters = interventions.find((element) => element.type === interventionType )?.parameters;
+    const eventParameters = events.find((element) => element.type === eventType )?.parameters;
 
     for (const [key, value] of Object.entries(inputs)) {
-      const parameterType = interventionParameters?.find((element) => element.id === key);
+      const parameterType = eventParameters?.find((element) => element.id === key);
       if (parameterType) {
-        if (parameterType.__typename === 'InterventionChoiceParameter') params.push({id: key, choice: value})
+        if (parameterType.__typename === 'EventChoiceParameter') params.push({id: key, choice: value})
         else params.push({id: key, value: parseInt(value, 10)})
       }
     }
@@ -211,12 +211,12 @@ const AddIntervention = (props) => {
   };
 
   const handleSubmit = (values) => {
-    const newIntervention = {
-      type: activeIntervention,
+    const newEvent = {
+      type: activeEvent,
       date: dayjs(date).format('YYYY-MM-DD'),
-      parameters: serializeInputs(values, activeIntervention),
+      parameters: serializeInputs(values, activeEvent),
     }
-    submitIntervention({variables: newIntervention});
+    submitEvent({variables: newEvent});
   }
 
   return (
@@ -230,18 +230,18 @@ const AddIntervention = (props) => {
               <InputWrapper>
                 <CustomInput
                   type="select"
-                  id="interventionTypeField"
-                  name="interventionType"
-                  value={activeIntervention}
-                  onChange={handleInterventionChange}
+                  id="eventTypeField"
+                  name="eventType"
+                  value={activeEvent}
+                  onChange={handleEventChange}
                 >
                   <option value="">Select event</option>
-                  { interventions && interventions.map((intervention) => (
+                  { events && events.map((event) => (
                     <option
-                      key={intervention.type}
-                      value={intervention.type}
+                      key={event.type}
+                      value={event.type}
                     >
-                        { intervention.description }
+                        { event.description }
                     </option>
                   ))}
                 </CustomInput>
@@ -255,9 +255,9 @@ const AddIntervention = (props) => {
               </InputWrapper>
             </FormRow>
             <FormRow>
-              <InterventionForm
-                type={activeIntervention}
-                parameters={interventions.find((element) => element.type === activeIntervention)?.parameters}
+              <EventForm
+                type={activeEvent}
+                parameters={events.find((element) => element.type === activeEvent)?.parameters}
                 onSubmit={handleSubmit}
               />
             </FormRow>
@@ -267,4 +267,4 @@ const AddIntervention = (props) => {
   );
 };
 
-export default AddIntervention;
+export default AddEvent;

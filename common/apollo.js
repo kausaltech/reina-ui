@@ -19,13 +19,13 @@ function createApolloClient() {
     }),
     cache: new InMemoryCache({
       typePolicies: {
-        InterventionIntParameter: {
+        EventIntParameter: {
           keyFields: false,
         },
-        InterventionFloatParameter: {
+        EventFloatParameter: {
           keyFields: false,
         },
-        InterventionChoiceParameter: {
+        EventChoiceParameter: {
           keyFields: false,
         },
         Choice: {

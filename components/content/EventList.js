@@ -53,7 +53,11 @@ const DisplayValueParameters = (props) => {
   const { parameters } = props;
   return (
     <>
-      { parameters.map((param) => param.__typename === 'InterventionIntParameter' && <DisplayParameter key={param.id} >{param.value} <span className="unit">{param.unit}</span></DisplayParameter>)}
+      { parameters.filter(param => param.__typename === 'EventIntParameter' && param.value !== null)
+        .map(
+          (param) => <DisplayParameter key={param.id}>{param.value} <span className="unit">{param.unit}</span></DisplayParameter>
+        )
+      }
     </>
   )
 };
@@ -62,20 +66,23 @@ const DisplayChoiceParameters = (props) => {
   const { parameters } = props;
   return (
     <>
-      { parameters.map((param) => param.__typename === 'InterventionChoiceParameter' && <span key={param.id}> ({param.choice.label})</span>)}
+      { parameters.filter(param => param.__typename === 'EventChoiceParameter' && param.choice !== null)
+        .map(
+          (param) => <span key={param.id}> ({param.choice.label})</span>
+        )}
     </>
   )
 };
 
-const DELETE_INTERVENTION = gql`
-  mutation DeleteIntervention($id: ID!) {
-    deleteIntervention(interventionId: $id) {
+const DELETE_EVENT = gql`
+  mutation DeleteEvent($id: ID!) {
+    deleteEvent(eventId: $id) {
       ok
     }
   }
 `;
 
-const RESET_INTERVENTIONS = gql`
+const RESET_EVENTS = gql`
   mutation ResetVariables {
     resetVariables {
       ok
@@ -83,7 +90,7 @@ const RESET_INTERVENTIONS = gql`
   }
 `;
 
-const InterventionRow = (props) => {
+const EventRow = (props) => {
   const { event, handleDelete } = props;
 
   return (
@@ -104,37 +111,37 @@ const InterventionRow = (props) => {
   )
 }
 
-const InterventionList = (props) => {
-  const { interventions, updateList, loading } = props;
+const EventList = (props) => {
+  const { events, updateList, loading } = props;
   const today = new Date();
 
-  const [deleteIntervention] = useMutation(DELETE_INTERVENTION, {
+  const [deleteEvent] = useMutation(DELETE_EVENT, {
     onCompleted({data}) {
       updateList();
-      //console.log(`Intervention deleted`);
+      //console.log(`Event deleted`);
     }
   });
 
-  const [resetInterventions] = useMutation(RESET_INTERVENTIONS, {
+  const [resetEvents] = useMutation(RESET_EVENTS, {
     onCompleted({data}) {
       updateList();
-      //console.log(`Interventions reseted`);
+      //console.log(`Events reseted`);
     }
   });
 
   const handleDelete = (id, evt) => {
-    deleteIntervention({variables: { id }});
+    deleteEvent({variables: { id }});
   };
 
-  let pastInterventions = [];
-  let futureInterventions = [];
+  let pastEvents = [];
+  let futureEvents = [];
 
-  if (interventions) {
-    pastInterventions = interventions
-      .filter((intervention) => dayjs(intervention.date) < today )
+  if (events) {
+    pastEvents = events
+      .filter((event) => dayjs(event.date) < today )
       .sort((a, b) => (a.date > b.date) ? 1 : -1);
-    futureInterventions = interventions
-      .filter((intervention) => dayjs(intervention.date) >= today )
+    futureEvents = events
+      .filter((event) => dayjs(event.date) >= today )
       .sort((a, b) => (a.date > b.date) ? 1 : -1);
   }
 
@@ -142,7 +149,7 @@ const InterventionList = (props) => {
     <DashCard>
       <h3>Scenario</h3>
       <Link href="/">See outcome</Link>
-      <Button size="sm" className="float-right mb-3" onClick={resetInterventions}>Reset Scenario</Button>
+      <Button size="sm" className="float-right mb-3" onClick={resetEvents}>Reset Scenario</Button>
       { loading ?
         <div className="d-flex justify-content-center align-items-center w-100 my-5"><div><Spinner type="grow" color="secondary" /></div></div>
         : (
@@ -160,26 +167,26 @@ const InterventionList = (props) => {
             <tr>
               <th colSpan="2">+</th>
               <th colSpan="3" id="pastToggler">
-                <a href="#pastToggler">Past events ({ pastInterventions.length })</a>
+                <a href="#pastToggler">Past events ({ pastEvents.length })</a>
               </th>
             </tr>
           </tbody>
           <UncontrolledCollapse toggler="#pastToggler" tag="tbody" defaultOpen={false}>
-            { pastInterventions && pastInterventions.map((intervention) =>
-              <InterventionRow event={intervention} handleDelete={handleDelete} key={intervention.id} />
+            { pastEvents && pastEvents.map((event) =>
+              <EventRow event={event} handleDelete={handleDelete} key={event.id} />
             )}
           </UncontrolledCollapse>
           <tbody>
             <tr>
               <th colSpan="2">+</th>
               <th colSpan="3" id="futureToggler">
-                <a href="#futureToggler">Future events ({ futureInterventions.length })</a>
+                <a href="#futureToggler">Future events ({ futureEvents.length })</a>
               </th>
             </tr>
           </tbody>
           <UncontrolledCollapse toggler="#futureToggler" tag="tbody" defaultOpen={true}>
-            { futureInterventions && futureInterventions.map((intervention) =>
-              <InterventionRow event={intervention} handleDelete={handleDelete} key={intervention.id} />
+            { futureEvents && futureEvents.map((event) =>
+              <EventRow event={event} handleDelete={handleDelete} key={event.id} />
             )}
           </UncontrolledCollapse>
         </Table>
@@ -188,4 +195,4 @@ const InterventionList = (props) => {
   );
 };
 
-export default InterventionList;
+export default EventList;

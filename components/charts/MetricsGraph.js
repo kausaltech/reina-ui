@@ -5,7 +5,7 @@ import dayjs from 'dayjs';
 const DynamicPlot = dynamic(() => import('react-plotly.js'),
     { ssr: false });
 
-const createInterventionBar = (interventionSet, startDate, endDate, index) => {
+const createEventBar = (eventSet, startDate, endDate, index) => {
   const firstY = -0.2;
   const barHeight = 0.05;
   const barMargin = 0.06;
@@ -32,23 +32,23 @@ const createInterventionBar = (interventionSet, startDate, endDate, index) => {
     x: 1.025,
     y: barPosition - barHeight,
     showarrow: false,
-    text: interventionSet.label,
+    text: eventSet.label,
     xanchor: 'left',
     yanchor: 'bottom',
     yshift: -4,
   };
 
   // bar segments
-  interventionSet.interventions.forEach((intervention, idx) => {
-    const opacity = intervention.reduction/100;
+  eventSet.events.forEach((event, idx) => {
+    const opacity = event.reduction/100;
     let end = endDate;
-    if (interventionSet.interventions.length > idx + 1) end = interventionSet.interventions[idx+1].date;
+    if (eventSet.events.length > idx + 1) end = eventSet.events[idx+1].date;
   
     bar.push({
       type: 'rect',
       xref:'x',
       yref:'paper',
-      x0: intervention.date,
+      x0: event.date,
       y0: barPosition,
       x1: end,
       y1: barPosition-barHeight,
@@ -63,7 +63,7 @@ const createInterventionBar = (interventionSet, startDate, endDate, index) => {
 };
 
 function MetricsGraph(props) {
-  const { dailyMetrics, shownMetrics, title, validationMetrics, interventions } = props;
+  const { dailyMetrics, shownMetrics, title, validationMetrics, events } = props;
   const { metrics } = dailyMetrics;
 
   let metricsByType = new Map(metrics.map(m => [m.type, {metric: m, dates: dailyMetrics.dates}]));
@@ -102,11 +102,11 @@ function MetricsGraph(props) {
   let annotations = [];
   let shapes = [];
 
-  // create a horizontal bar graph for each intervention
-  const barCount = interventions ? interventions.length : 0;
+  // create a horizontal bar graph for each event
+  const barCount = events ? events.length : 0;
   if (barCount > 0) 
-    interventions.forEach((category, index) => {
-      const newBar = createInterventionBar(category, dailyMetrics.dates[0], dailyMetrics.dates[dailyMetrics.dates.length-1], index);
+    events.forEach((category, index) => {
+      const newBar = createEventBar(category, dailyMetrics.dates[0], dailyMetrics.dates[dailyMetrics.dates.length-1], index);
       shapes = shapes.concat(newBar.bar);
       annotations.push(newBar.label);
     });

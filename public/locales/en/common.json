@@ -1,5 +1,5 @@
 {
-  "TestingStrategyIntervention": "Test",
-  "LimitMobilityIntervention": "Limit mobility",
-  "ImportInfectionsIntervention": "Import infections"
+  "TestingStrategyEvent": "Test",
+  "LimitMobilityEvent": "Limit mobility",
+  "ImportInfectionsEvent": "Import infections"
 }

@@ -3,13 +3,13 @@ import { gql, useQuery } from "@apollo/client";
 import { useTranslation } from '../i18n';
 import { Container, Row, Col, Spinner } from 'reactstrap';
 import Layout from 'components/Layout';
-import AddIntervention from 'components/content/AddIntervention';
-import InterventionList from 'components/content/InterventionList';
+import AddEvent from 'components/content/AddEvent';
+import EventList from 'components/content/EventList';
 import DashCard from 'components/general/DashCard';
 
-const GET_ACTIVE_INTERVENTIONS = gql`
+const GET_ACTIVE_EVENTS = gql`
   query GetActiveInvertions {
-    activeInterventions {
+    activeEvents {
       id
       type
       date
@@ -17,11 +17,11 @@ const GET_ACTIVE_INTERVENTIONS = gql`
       parameters {
         id
         description
-        ... on InterventionIntParameter {
+        ... on EventIntParameter {
           value
           unit
         }
-        ... on InterventionChoiceParameter {
+        ... on EventChoiceParameter {
           choice {
             id
             label
@@ -32,22 +32,22 @@ const GET_ACTIVE_INTERVENTIONS = gql`
   }
 `;
 
-const GET_INTERVENTIONS = gql`
-  query GetAvailableInterventions {
-    availableInterventions {
+const GET_EVENTS = gql`
+  query GetAvailableEvents {
+    availableEvents {
       type
       description
       parameters {
         id
         description
         required
-        ... on InterventionChoiceParameter {
+        ... on EventChoiceParameter {
           choices {
             id
             label
           }
         }
-        ... on InterventionIntParameter {
+        ... on EventIntParameter {
           minValue
           maxValue
           unit
@@ -58,8 +58,8 @@ const GET_INTERVENTIONS = gql`
 `;
 export default function Scenario() {
   const { t, i18n } = useTranslation(['common']);
-  const { loading, error, data } = useQuery(GET_INTERVENTIONS);
-  const { loading: loadingActive, error: errorActive, data: dataActive, refetch } = useQuery(GET_ACTIVE_INTERVENTIONS);
+  const { loading, error, data } = useQuery(GET_EVENTS);
+  const { loading: loadingActive, error: errorActive, data: dataActive, refetch } = useQuery(GET_ACTIVE_EVENTS);
 
   const updateList = () => {
     //console.log('Updating list');
@@ -74,12 +74,12 @@ export default function Scenario() {
       <Container className="mt-4" fluid="lg">
         <Row className="mx-2">
           <Col>
-              <AddIntervention
-                interventions={data ? data.availableInterventions : []}
+              <AddEvent
+                events={data ? data.availableEvents : []}
                 handleSuccess={updateList}
                 loading={loading}/>
-              <InterventionList
-                interventions={dataActive ? dataActive.activeInterventions : []}
+              <EventList
+                events={dataActive ? dataActive.activeEvents : []}
                 updateList={updateList}
                 loading={loadingActive}
               />

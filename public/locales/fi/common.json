@@ -1,5 +1,5 @@
 {
-  "TestingStrategyIntervention": "Testataan kaikki oirehtivat",
-  "LimitMobilityIntervention": "Rajoitetaan väestön liikkuvuutta",
-  "ImportInfectionsIntervention": "Alueelle tulee infektioita"
+  "TestingStrategyEvent": "Testataan kaikki oirehtivat",
+  "LimitMobilityEvent": "Rajoitetaan väestön liikkuvuutta",
+  "ImportInfectionsEvent": "Alueelle tulee infektioita"
 }

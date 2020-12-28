@@ -60,7 +60,8 @@ function SimulationResults({ runId }) {
   }
   if (error) {
     console.log(error);
-    return <div>Errrrrrorr in starting simulation</div>
+    stopPolling();
+    return <div>Failed to get simulation results</div>;
   }
 
   const { simulationResults, validationMetrics } = data;

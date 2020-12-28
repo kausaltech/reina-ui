@@ -2,9 +2,9 @@ import React from 'react';
 import { gql, useQuery } from "@apollo/client";
 import MetricsGraph from './MetricsGraph';
 
-const GET_ACTIVE_INTERVENTIONS = gql`
+const GET_ACTIVE_EVENTS = gql`
 query GetActiveInvertions {
-  activeInterventions {
+  activeEvents {
     id
     type
     date
@@ -12,11 +12,11 @@ query GetActiveInvertions {
     parameters {
       id
       description
-      ... on InterventionIntParameter {
+      ... on EventIntParameter {
         value
         unit
       }
-      ... on InterventionChoiceParameter {
+      ... on EventChoiceParameter {
         choice {
           id
           label
@@ -27,54 +27,54 @@ query GetActiveInvertions {
 }
 `;
 
-const categorizeMobilityInterventions = (interventions) => {
-  if(!interventions?.length) return null;
+const categorizeMobilityEvents = (events) => {
+  if(!events?.length) return null;
 
-  const mobilityInterventions = interventions.filter((element) => element.type==='LIMIT_MOBILITY');
-  const editedInterventions = [];
-  const interventionCategories= [];
+  const mobilityEvents = events.filter((element) => element.type==='LIMIT_MOBILITY');
+  const editedEvents = [];
+  const eventCategories= [];
 
-  // based on its parameters create a category label for each intervention
-  mobilityInterventions.forEach((element) => {
-      const minAge = element.parameters.find((param) => param.id==='min_age');
-      const maxAge = element.parameters.find((param) => param.id==='max_age');
-      const place = element.parameters.find((param) => param.id==='place');
-      const reduction = element.parameters.find((param) => param.id==='reduction');
+  // based on its parameters create a category label for each event
+  mobilityEvents.forEach((element) => {
+      const minAge = element.parameters.find((param) => param.id === 'min_age');
+      const maxAge = element.parameters.find((param) => param.id === 'max_age');
+      const place = element.parameters.find((param) => param.id === 'place');
+      const reduction = element.parameters.find((param) => param.id === 'reduction');
 
-      const ageGroup = (minAge || maxAge) ?
-        ` (${minAge ? minAge.value : 0}-${maxAge ? maxAge.value : 100})` : undefined;
-      const categoryLabel = `${place ? place.choice.label : 'All'}${ageGroup || ''}`;
+      const ageGroup = (minAge.value !== null || maxAge.value !== null) ?
+        ` (${minAge.value !== null ? minAge.value : 0}–${maxAge.value !== null ? maxAge.value : 100}-v.)` : undefined;
+      const categoryLabel = `${place?.choice ? place.choice.label : 'All'}${ageGroup || ''}`;
 
-      editedInterventions.push({
+      editedEvents.push({
         label: categoryLabel,
         reduction: reduction.value,
         date: element.date,
         id: element.id,
       });
 
-      interventionCategories.push(categoryLabel);
+      eventCategories.push(categoryLabel);
   });
 
-  // create a list of unique intervention categories by label
-  const uniqueCategories = Array.from(new Set(interventionCategories)).sort();
-  const categorizedInterventions = [];
+  // create a list of unique event categories by label
+  const uniqueCategories = Array.from(new Set(eventCategories)).sort();
+  const categorizedEvents = [];
   uniqueCategories.forEach((cat) => {
-    const category = editedInterventions.filter((intervention) => intervention.label === cat);
-    categorizedInterventions.push({
-      interventions: category,
+    const category = editedEvents.filter((event) => event.label === cat);
+    categorizedEvents.push({
+      events: category,
       label: cat,
     })
   })
-  return categorizedInterventions;
+  return categorizedEvents;
 };
 
 function PopulationGraph(props) {
   const { dailyMetrics } = props;
 
-  const { loading: loadingActive, error: errorActive, data: dataActive } = useQuery(GET_ACTIVE_INTERVENTIONS);
+  const { loading: loadingActive, error: errorActive, data: dataActive } = useQuery(GET_ACTIVE_EVENTS);
 
   if (loadingActive) {
-    return <div>Loading interventions</div>
+    return <div>Loading events</div>
   }
   if (errorActive) {
     console.log(error);
@@ -92,7 +92,7 @@ function PopulationGraph(props) {
   return <MetricsGraph
     dailyMetrics={dailyMetrics}
     shownMetrics={shownMetrics}
-    interventions={categorizeMobilityInterventions(dataActive.activeInterventions)}
+    events={categorizeMobilityEvents(dataActive.activeEvents)}
     title="Population"
   />
 }
