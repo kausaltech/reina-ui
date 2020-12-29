@@ -20,14 +20,16 @@ export default function Home() {
 
   const [
     runSimulation,
-    { loading, error, data }
+    { loading, error, data, called }
   ] = useMutation(START_SIMULATION);
 
-  runSimulation();
+  if (process.browser && !called) {
+    runSimulation();
+  }
 
   if (error) {
     console.log(error);
-    return <div>Erroorrr in starting simulation</div>
+    return <div>Error in starting simulation</div>
   }
 
   if (loading || !data) {

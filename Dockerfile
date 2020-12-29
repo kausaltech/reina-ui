@@ -7,11 +7,12 @@ FROM node:alpine
 RUN mkdir -p /app
 WORKDIR /app
 
-# copy source files
-COPY . /app
-
 # install dependencies
+COPY package.json yarn.lock /app/
 RUN yarn install
+
+# copy rest of the source files
+COPY . /app
 
 # run the build. TODO: the build is currently failing, needs fixing
 RUN yarn build
