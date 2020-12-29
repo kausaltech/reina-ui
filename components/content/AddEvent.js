@@ -168,7 +168,7 @@ const EventForm = (props) => {
 };
 
 const ADD_EVENT = gql`
-  mutation AddNewEvent($date: String!, $type: InverventionType!, $parameters: [EventInputParameter]) {
+  mutation AddNewEvent($date: String!, $type: EventType!, $parameters: [EventInputParameter]) {
     addEvent(event: {date: $date, type: $type, parameters: $parameters}) {
         id
     }
