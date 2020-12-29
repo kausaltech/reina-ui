@@ -2,9 +2,11 @@ import Head from 'next/head';
 import { gql, useQuery } from "@apollo/client";
 import { useTranslation } from '../i18n';
 import { Container, Row, Col, Spinner } from 'reactstrap';
+import styled from 'styled-components';
 import Layout from 'components/Layout';
 import AddEvent from 'components/content/AddEvent';
 import EventList from 'components/content/EventList';
+import EventTimeLines from 'components/general/EventTimeLines';
 import DashCard from 'components/general/DashCard';
 
 const GET_ACTIVE_EVENTS = gql`
@@ -83,6 +85,13 @@ export default function Scenario() {
                 updateList={updateList}
                 loading={loadingActive}
               />
+              <DashCard>
+                <EventTimeLines
+                  startDate="2020-02-02"
+                  endDate="2021-28-02"
+                  events={[]}
+                />
+              </DashCard>
           </Col>
         </Row>
       </Container>
