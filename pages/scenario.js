@@ -87,9 +87,9 @@ export default function Scenario() {
               />
               <DashCard>
                 <EventTimeLines
-                  startDate="2020-02-02"
+                  startDate="2020-03-02"
                   endDate="2021-28-02"
-                  events={[]}
+                  events={dataActive ? dataActive.activeEvents : []}
                 />
               </DashCard>
           </Col>
