@@ -31,8 +31,9 @@ const LabelSpace = styled.div`
 
 const MonthHeader = styled.div`
   flex-shrink: 0;
-  border-left: 6px solid #fff;
-  width: ${(props) => props.width + 6}px;
+  font-size: 14px;
+  //border-left: 6px solid #fff;
+  width: ${(props) => props.width + 4}px;
 `;
 
 const Months = ({months}) => {
@@ -40,7 +41,7 @@ const Months = ({months}) => {
     <MonthsWrapper>
       <LabelSpace />
     { months.map((month) => (
-      <MonthHeader width={month.monthLength * 12} key={month.monthName}>
+      <MonthHeader width={month.monthLength * 13} key={month.monthName}>
         {month.monthName}
       </MonthHeader>
     ))}

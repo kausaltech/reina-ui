@@ -1,21 +1,23 @@
 import dayjs from 'dayjs';
+import isToday from 'dayjs/plugin/isToday';
 import styled from 'styled-components';
 import { transparentize } from 'polished';
 import {
-  Card, CardImg, CardText, CardBody,
-  CardTitle, CardSubtitle, Button
+  UncontrolledTooltip
 } from 'reactstrap';
+
+dayjs.extend(isToday);
 
 const Label = styled.div`
   width: 120px;
   margin-left: -120px;
-  padding-right: 6px;
+  padding-right: 12px;
   background-color: #fff;
   flex-shrink: 0;
   position: relative;
   /* needs some js magic to make label sticky relative to parent */
   text-align: right;
-  font-size: 14px;
+  font-size: 12px;
   line-height: 1;
   height: 24px;
 `;
@@ -32,34 +34,69 @@ const DayMarker = styled.div`
   flex-shrink: 0;
   width: 12px;
   height: 24px;
-  border: 1px solid #fff;
+  margin-right: 1px;
+  text-align: center;
   background-color: ${(props) => props.strength ? transparentize(1-props.strength, props.color) : '#f0f0f0'};
 
   &:hover {
-    border-color: #333;
+    box-shadow: 0 0 10px;
+    z-index: 200;
   }
 
   &.first {
-    width: 18px;
-    border-left-width: 6px;
+    margin-left: 4px;
   }
 
-  span {
-    color: ${(props) => props.color};
+  &.today {
+    border-left: 2px solid #333;
+    border-right: 2px solid #333;
   }
+`;
+
+const DayMarkerContent = styled.div`
+  font-size: 16px;
+  line-height: 24px;
+  color: ${(props) => props.markerColor};
 `;
 
 const Day = (props) => {
   const { date, event, state, color } = props;
   let currentState = state;
+  let classes = '';
+  if (date.date()===1) classes +=' first';
+  if (date.isToday()) classes +=' today';
+
+  let eventMarker = '';
+  let eventTooltip = '';
+  if (event?.type === 'IMPORT_INFECTIONS') {
+    eventMarker = <DayMarkerContent markerColor="#339966">&#x273A;</DayMarkerContent>;
+    eventTooltip = <UncontrolledTooltip
+      placement="top"
+      target={`evt-${event.id}`}
+    >
+      {event.amount} {event.label}
+    </UncontrolledTooltip>
+  };
+  if (['TEST_ALL_WITH_SYMPTOMS','TEST_ONLY_SEVERE_SYMPTOMS','TEST_WITH_CONTACT_TRACING', 'LIMIT_MOBILITY'].includes(event?.type)) {
+    eventMarker = <DayMarkerContent markerColor="#fff">&#x2771;</DayMarkerContent>;
+    eventTooltip = <UncontrolledTooltip
+    placement="top"
+    target={`evt-${event.id}`}
+  >
+    { event.strength != undefined && `${event.label} ${event.strength} %` }
+    { event.reduction != undefined && `${event.label} -${event.reduction} %` }
+  </UncontrolledTooltip>
+  };
 
   return (
     <DayMarker
       strength={currentState/100}
-      className={date.date()===1 && 'first'}
+      className={classes}
       color={color}
+      id={event && `evt-${event.id}`}
     >
-      { event ? <span>X</span> : <span> </span>}
+      { eventMarker }
+      { eventTooltip }
     </DayMarker>
   );
 };
@@ -89,7 +126,8 @@ const TimeLine = (props) => {
       eventColor = '#993300';
     }
     if (['TEST_ALL_WITH_SYMPTOMS','TEST_ONLY_SEVERE_SYMPTOMS','TEST_WITH_CONTACT_TRACING'].includes(todaysEvent?.type)) {
-      timeLineState = todaysEvent.strength;
+      if (todaysEvent.type === 'TEST_ALL_WITH_SYMPTOMS') timeLineState = 50;
+        else timeLineState = todaysEvent.strength;
       eventColor = '#224499';
     }
     if (todaysEvent?.type === 'IMPORT_INFECTIONS') {

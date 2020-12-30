@@ -55,7 +55,7 @@ const getInfectionEvents = (events) => {
       const amount = element.parameters.find((param) => param.id === 'amount');
       editedEvents.push({
         label: 'New infections',
-        amount: amount,
+        amount: amount.value,
         date: element.date,
         id: element.id,
         type: element.type,
