@@ -2,7 +2,11 @@ import dayjs from 'dayjs';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 import styled from 'styled-components';
 import TimeLine from 'components/general/TimeLine';
-import { categorizeMobilityEvents, getInfectionEvents, categorizeTestingEvents } from 'common/preprocess';
+import {
+  categorizeMobilityEvents,
+  getInfectionEvents,
+  categorizeTestingEvents,
+  categorizeMaskEvents } from 'common/preprocess';
 
 dayjs.extend(isSameOrBefore);
 
@@ -14,9 +18,14 @@ const TimeLines = styled.div`
 `;
 
 const TimeLineGroup = styled.div`
-  border-bottom: solid 1px #efefef;
   margin-bottom: .5rem;
   width: auto;
+`;
+
+const TimeLineGroupHeader = styled.h3`
+  font-size: 14px;
+  width: 108px;
+  text-align: right;
 `;
 
 const MonthsWrapper = styled.div`
@@ -32,7 +41,7 @@ const LabelSpace = styled.div`
 const MonthHeader = styled.div`
   flex-shrink: 0;
   font-size: 14px;
-  //border-left: 6px solid #fff;
+  border-bottom: solid 1px #aaaaaa;
   width: ${(props) => props.width + 4}px;
 `;
 
@@ -79,11 +88,13 @@ const EventTimeLines = (props) => {
   const infectionEvents = getInfectionEvents(events);
   const mobilityEvents = categorizeMobilityEvents(events);
   const testingEvents = categorizeTestingEvents(events);
+  const maskEvents = categorizeMaskEvents(events);
 
   return (
     <TimeLines>
       <Months months={monthData} />
       <TimeLineGroup>
+        <TimeLineGroupHeader>New infections</TimeLineGroupHeader>
         <TimeLine 
           startDate={startDate}
           endDate={endDate}
@@ -92,26 +103,40 @@ const EventTimeLines = (props) => {
         />
       </TimeLineGroup>
       <TimeLineGroup>
-      { mobilityEvents?.map((category) => (
-        <TimeLine 
-          startDate={startDate}
-          endDate={endDate}
-          events={category.events}
-          label={category.label}
-          key={category.label}
-        />
-      ))}
+      <TimeLineGroupHeader>Limit mobility</TimeLineGroupHeader>
+        { mobilityEvents?.map((category) => (
+          <TimeLine 
+            startDate={startDate}
+            endDate={endDate}
+            events={category.events}
+            label={category.label}
+            key={category.label}
+          />
+        ))}
       </TimeLineGroup>
       <TimeLineGroup>
-      { testingEvents?.map((category) => (
-        <TimeLine 
-          startDate={startDate}
-          endDate={endDate}
-          events={category.events}
-          label={category.label}
-          key={category.label}
-        />
-      ))}
+        <TimeLineGroupHeader>Wearing masks</TimeLineGroupHeader>
+        { maskEvents?.map((category) => (
+          <TimeLine 
+            startDate={startDate}
+            endDate={endDate}
+            events={category.events}
+            label={category.label}
+            key={category.label}
+          />
+        ))}
+      </TimeLineGroup>
+      <TimeLineGroup>
+        <TimeLineGroupHeader>Testing</TimeLineGroupHeader>
+        { testingEvents?.map((category) => (
+          <TimeLine 
+            startDate={startDate}
+            endDate={endDate}
+            events={category.events}
+            label={category.label}
+            key={category.label}
+          />
+        ))}
       </TimeLineGroup>
     </TimeLines>
   );

@@ -48,8 +48,10 @@ const DayMarker = styled.div`
   }
 
   &.today {
-    border-left: 2px solid #333;
-    border-right: 2px solid #333;
+    border-left: 2px solid #990000;
+    border-right: 2px solid #990000;
+    margin-right: 0;
+    margin-left: -1px;
   }
 `;
 
@@ -75,6 +77,15 @@ const Day = (props) => {
       target={`evt-${event.id}`}
     >
       {event.amount} {event.label}
+    </UncontrolledTooltip>
+  };
+  if (event?.type === 'WEAR_MASKS') {
+    eventMarker = <DayMarkerContent markerColor="#333333">&#x2771;</DayMarkerContent>;
+    eventTooltip = <UncontrolledTooltip
+      placement="top"
+      target={`evt-${event.id}`}
+    >
+      { event.value != undefined && `${event.label} ${event.value} %` }
     </UncontrolledTooltip>
   };
   if (['TEST_ALL_WITH_SYMPTOMS','TEST_ONLY_SEVERE_SYMPTOMS','TEST_WITH_CONTACT_TRACING', 'LIMIT_MOBILITY'].includes(event?.type)) {
@@ -133,6 +144,10 @@ const TimeLine = (props) => {
     if (todaysEvent?.type === 'IMPORT_INFECTIONS') {
       timeLineState = 0;
       eventColor = '#339966';
+    }
+    if (todaysEvent?.type === 'WEAR_MASKS') {
+      timeLineState = todaysEvent.value;
+      eventColor = '#333333';
     }
 
     timeLineData.push({
