@@ -6,25 +6,30 @@ import {
   categorizeMobilityEvents,
   getInfectionEvents,
   categorizeTestingEvents,
-  categorizeMaskEvents } from 'common/preprocess';
+  categorizeMaskEvents,
+  categorizeVaccinationEvents } from 'common/preprocess';
 
 dayjs.extend(isSameOrBefore);
 
 const TimeLines = styled.div`
+  display: flex;
   overflow-x: auto;
   overscroll-behavior-x: contain;
-  padding-bottom: .5rem;
+  padding-bottom: .25rem;
   background-color: #fff;
 `;
 
 const TimeLineGroup = styled.div`
   margin-bottom: .5rem;
+  padding-top: .25rem;
   width: auto;
+  border-top: solid 1px #dddddd;
 `;
 
 const TimeLineGroupHeader = styled.h3`
-  font-size: 14px;
+  font-size: 12px;
   width: 108px;
+  margin-bottom: .5rem;
   text-align: right;
 `;
 
@@ -41,7 +46,6 @@ const LabelSpace = styled.div`
 const MonthHeader = styled.div`
   flex-shrink: 0;
   font-size: 14px;
-  border-bottom: solid 1px #aaaaaa;
   width: ${(props) => props.width + 4}px;
 `;
 
@@ -89,55 +93,81 @@ const EventTimeLines = (props) => {
   const mobilityEvents = categorizeMobilityEvents(events);
   const testingEvents = categorizeTestingEvents(events);
   const maskEvents = categorizeMaskEvents(events);
+  const vaccinationEvents = categorizeVaccinationEvents(events);
 
   return (
     <TimeLines>
-      <Months months={monthData} />
-      <TimeLineGroup>
-        <TimeLineGroupHeader>New infections</TimeLineGroupHeader>
-        <TimeLine 
-          startDate={startDate}
-          endDate={endDate}
-          events={infectionEvents ? infectionEvents : []}
-          label="New infections"
-        />
-      </TimeLineGroup>
-      <TimeLineGroup>
-      <TimeLineGroupHeader>Limit mobility</TimeLineGroupHeader>
-        { mobilityEvents?.map((category) => (
-          <TimeLine 
-            startDate={startDate}
-            endDate={endDate}
-            events={category.events}
-            label={category.label}
-            key={category.label}
-          />
-        ))}
-      </TimeLineGroup>
-      <TimeLineGroup>
-        <TimeLineGroupHeader>Wearing masks</TimeLineGroupHeader>
-        { maskEvents?.map((category) => (
-          <TimeLine 
-            startDate={startDate}
-            endDate={endDate}
-            events={category.events}
-            label={category.label}
-            key={category.label}
-          />
-        ))}
-      </TimeLineGroup>
-      <TimeLineGroup>
-        <TimeLineGroupHeader>Testing</TimeLineGroupHeader>
-        { testingEvents?.map((category) => (
-          <TimeLine 
-            startDate={startDate}
-            endDate={endDate}
-            events={category.events}
-            label={category.label}
-            key={category.label}
-          />
-        ))}
-      </TimeLineGroup>
+      {/* extra wrapper to make container blocks stretch the full timeline, not just parent width */}
+      <div>
+        <Months months={monthData} />
+        { infectionEvents &&
+          <TimeLineGroup>
+            <TimeLineGroupHeader>New infections</TimeLineGroupHeader>
+            <TimeLine 
+              startDate={startDate}
+              endDate={endDate}
+              events={infectionEvents ? infectionEvents : []}
+              label="New infections"
+            />
+          </TimeLineGroup>
+        }
+        { mobilityEvents &&
+          <TimeLineGroup>
+          <TimeLineGroupHeader>Limit mobility</TimeLineGroupHeader>
+            { mobilityEvents?.map((category) => (
+              <TimeLine 
+                startDate={startDate}
+                endDate={endDate}
+                events={category.events}
+                label={category.label}
+                key={category.label}
+              />
+            ))}
+          </TimeLineGroup>
+        }
+        { maskEvents &&
+          <TimeLineGroup>
+            <TimeLineGroupHeader>Wearing masks</TimeLineGroupHeader>
+            { maskEvents?.map((category) => (
+              <TimeLine 
+                startDate={startDate}
+                endDate={endDate}
+                events={category.events}
+                label={category.label}
+                key={category.label}
+              />
+            ))}
+          </TimeLineGroup>
+        }
+        { testingEvents &&
+          <TimeLineGroup>
+            <TimeLineGroupHeader>Testing</TimeLineGroupHeader>
+            { testingEvents?.map((category) => (
+              <TimeLine 
+                startDate={startDate}
+                endDate={endDate}
+                events={category.events}
+                label={category.label}
+                key={category.label}
+              />
+            ))}
+          </TimeLineGroup>
+        }
+        { vaccinationEvents &&
+          <TimeLineGroup>
+            <TimeLineGroupHeader>Vaccination</TimeLineGroupHeader>
+            { vaccinationEvents?.map((category) => (
+              <TimeLine 
+                startDate={startDate}
+                endDate={endDate}
+                events={category.events}
+                label={category.label}
+                key={category.label}
+              />
+            ))}
+          </TimeLineGroup>
+        }
+      </div>
     </TimeLines>
   );
 };

@@ -20,12 +20,13 @@ const Label = styled.div`
   font-size: 12px;
   line-height: 1;
   height: 24px;
+  overflow: hidden;
 `;
 
 const TimeLineWrapper = styled.div`
   display: flex;
   position: relative;
-  padding-bottom: 1em;
+  padding-bottom: .5em;
   padding-left: 120px;
 `;
 
@@ -91,12 +92,21 @@ const Day = (props) => {
   if (['TEST_ALL_WITH_SYMPTOMS','TEST_ONLY_SEVERE_SYMPTOMS','TEST_WITH_CONTACT_TRACING', 'LIMIT_MOBILITY'].includes(event?.type)) {
     eventMarker = <DayMarkerContent markerColor="#fff">&#x2771;</DayMarkerContent>;
     eventTooltip = <UncontrolledTooltip
-    placement="top"
-    target={`evt-${event.id}`}
-  >
+      placement="top"
+      target={`evt-${event.id}`}
+    >
     { event.strength != undefined && `${event.label} ${event.strength} %` }
     { event.reduction != undefined && `${event.label} -${event.reduction} %` }
   </UncontrolledTooltip>
+  };
+  if (event?.type === 'VACCINATE') {
+    eventMarker = <DayMarkerContent markerColor="#333333">&#x2771;</DayMarkerContent>;
+    eventTooltip = <UncontrolledTooltip
+      placement="top"
+      target={`evt-${event.id}`}
+    >
+      { event.value != undefined && `${event.label} ${event.value} vaccinations/day` }
+    </UncontrolledTooltip>
   };
 
   return (
@@ -136,8 +146,8 @@ const TimeLine = (props) => {
       timeLineState = todaysEvent.reduction;
       eventColor = '#993300';
     }
-    if (['TEST_ALL_WITH_SYMPTOMS','TEST_ONLY_SEVERE_SYMPTOMS','TEST_WITH_CONTACT_TRACING'].includes(todaysEvent?.type)) {
-      if (todaysEvent.type === 'TEST_ALL_WITH_SYMPTOMS') timeLineState = 50;
+    if (['TEST_ALL_WITH_SYMPTOMS','TEST_ONLY_SEVERE_SYMPTOMS','TEST_WITH_CONTACT_TRACING', 'VACCINATE'].includes(todaysEvent?.type)) {
+      if (['TEST_ALL_WITH_SYMPTOMS', 'VACCINATE'].includes(todaysEvent.type)) timeLineState = 50;
         else timeLineState = todaysEvent.strength;
       eventColor = '#224499';
     }

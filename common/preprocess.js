@@ -48,12 +48,12 @@ const categorizeMobilityEvents = (events) => {
 const categorizeMaskEvents = (events) => {
   if(!events?.length) return null;
 
-  const mobilityEvents = events.filter((element) => element.type==='WEAR_MASKS');
+  const maskEvents = events.filter((element) => element.type==='WEAR_MASKS');
   const editedEvents = [];
   const eventCategories= [];
 
   // based on its parameters create a category label for each event
-  mobilityEvents.forEach((element) => {
+  maskEvents.forEach((element) => {
       const minAge = element.parameters.find((param) => param.id === 'min_age');
       const maxAge = element.parameters.find((param) => param.id === 'max_age');
       const place = element.parameters.find((param) => param.id === 'place');
@@ -66,6 +66,47 @@ const categorizeMaskEvents = (events) => {
       editedEvents.push({
         label: categoryLabel,
         value: effect.value,
+        date: element.date,
+        id: element.id,
+        type: element.type,
+      });
+
+      eventCategories.push(categoryLabel);
+  });
+
+  // create a list of unique event categories by label
+  const uniqueCategories = Array.from(new Set(eventCategories)).sort();
+  const categorizedEvents = [];
+  uniqueCategories.forEach((cat) => {
+    const category = editedEvents.filter((event) => event.label === cat);
+    categorizedEvents.push({
+      events: category,
+      label: cat,
+    })
+  })
+  return categorizedEvents;
+};
+
+const categorizeVaccinationEvents = (events) => {
+  if(!events?.length) return null;
+
+  const vaccinationEvents = events.filter((element) => element.type==='VACCINATE');
+  const editedEvents = [];
+  const eventCategories= [];
+
+  // based on its parameters create a category label for each event
+  vaccinationEvents.forEach((element) => {
+      const minAge = element.parameters.find((param) => param.id === 'min_age');
+      const maxAge = element.parameters.find((param) => param.id === 'max_age');
+      const rate = element.parameters.find((param) => param.id === 'daily_vaccinations');
+
+      const ageGroup = (minAge.value !== null || maxAge.value !== null) ?
+        ` (${minAge.value !== null ? minAge.value : 0}–${maxAge.value !== null ? maxAge.value : 100}-v.)` : undefined;
+      const categoryLabel = `${ageGroup || ''}`;
+
+      editedEvents.push({
+        label: categoryLabel,
+        value: rate.value,
         date: element.date,
         id: element.id,
         type: element.type,
@@ -150,4 +191,5 @@ export {
   getInfectionEvents,
   categorizeTestingEvents,
   categorizeMaskEvents,
+  categorizeVaccinationEvents,
 };
