@@ -5,11 +5,11 @@ import dayjs from 'dayjs';
 const DynamicPlot = dynamic(() => import('react-plotly.js'),
     { ssr: false });
 
-const createEventBar = (eventSet, startDate, endDate, index) => {
-  const firstY = -0.2;
+const createEventBar = (eventSet, startDate, endDate, index, groupIndex) => {
+  const firstY = -0.25;
   const barHeight = 0.05;
-  const barMargin = 0.06;
-  const barPosition = firstY - (barHeight + barMargin) * index;
+  const barMargin = 0.03;
+  const barPosition = firstY - ((barHeight + barMargin) * index) - (groupIndex * 0.125);
 
   // box outline for the bar
   const bar =[{
@@ -29,7 +29,7 @@ const createEventBar = (eventSet, startDate, endDate, index) => {
   const label = {
     xref: 'paper',
     yref: 'paper',
-    x: 1.025,
+    x: 1.015,
     y: barPosition - barHeight,
     showarrow: false,
     text: eventSet.label,
@@ -40,10 +40,11 @@ const createEventBar = (eventSet, startDate, endDate, index) => {
 
   // bar segments
   eventSet.events.forEach((event, idx) => {
-    const opacity = event.reduction/100;
+    const opacity = event.value/100;
     let end = endDate;
     if (eventSet.events.length > idx + 1) end = eventSet.events[idx+1].date;
-  
+    if (event.continuous === false) end = new dayjs(event.date).add(1, 'day').format('YYYY-MM-DD');
+
     bar.push({
       type: 'rect',
       xref:'x',
@@ -52,7 +53,7 @@ const createEventBar = (eventSet, startDate, endDate, index) => {
       y0: barPosition,
       x1: end,
       y1: barPosition-barHeight,
-      fillcolor: '#A73939',
+      fillcolor: event.color,
       opacity: opacity,
       line: {
         width: 0,
@@ -101,16 +102,44 @@ function MetricsGraph(props) {
 
   let annotations = [];
   let shapes = [];
+  let barCount = 0;
+  let barIndex = 0;
+  let groupIndex = 0;
 
   // create a horizontal bar graph for each event
-  const barCount = events ? events.length : 0;
-  if (barCount > 0) 
-    events.forEach((category, index) => {
-      const newBar = createEventBar(category, dailyMetrics.dates[0], dailyMetrics.dates[dailyMetrics.dates.length-1], index);
-      shapes = shapes.concat(newBar.bar);
-      annotations.push(newBar.label);
-    });
+  events?.forEach((group) => {
+    const groupHeader = {
+      xref: 'paper',
+      yref: 'paper',
+      x: 0,
+      y: -0.225 - ((0.08) * barIndex) - (groupIndex * 0.125),
+      showarrow: false,
+      text: group.label,
+      font: { family: 'Inter' },
+      xanchor: 'left',
+      yanchor: 'bottom',
+      yshift: -4,
+    };
 
+    annotations.push(groupHeader);
+
+    barCount += group.categories ? group.categories.length : 0;
+    if (barCount > 0) 
+      group.categories.forEach((category) => {
+        const newBar = createEventBar(category, dailyMetrics.dates[0], dailyMetrics.dates[dailyMetrics.dates.length-1], barIndex, groupIndex);
+        shapes = shapes.concat(newBar.bar);
+        annotations.push(newBar.label);
+        barIndex += 1;
+      });
+
+    groupIndex += 1;
+  });
+/*
+ firstY = -0.2;
+  const barHeight = 0.05;
+  const barMargin = 0.03;
+  const barPosition = firstY - ((barHeight + barMargin) * index) - (groupIndex * 0.05);
+  */
   const todaymarker =
     {
       type: 'line',
@@ -129,11 +158,11 @@ function MetricsGraph(props) {
   shapes.push(todaymarker);
 
   const layout = {
-    height: 300 + barCount * 25,
+    height: 300 + barCount * 20 + groupIndex * 25,
     margin: {
       t: 24,
       r: 200,
-      b: 48 + barCount * 25,
+      b: 48 + barCount * 20 + groupIndex * 24,
     },
     autosize: true,
     font: {
