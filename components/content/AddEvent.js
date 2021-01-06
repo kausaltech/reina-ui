@@ -178,13 +178,13 @@ const ADD_EVENT = gql`
 
 const AddEvent = (props) => {
   const { events, handleSuccess, loading } = props;
-
-  const [date, setDate] = useState(new Date());
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const [date, setDate] = useState(tomorrow);
   const [activeEvent, setActiveEvent] = useState('');
   const [submitEvent, { data: addedEvent, loading: addingEvent }] = useMutation(ADD_EVENT, {
     onCompleted({data}) {
       setActiveEvent('');
-      // TODO: This fires too early? Parent refetch does not get the added event
       handleSuccess();
       console.log(`New event added`);
       console.log(data);
