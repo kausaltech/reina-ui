@@ -40,7 +40,7 @@ const createEventBar = (eventSet, startDate, endDate, index) => {
 
   // bar segments
   eventSet.events.forEach((event, idx) => {
-    const opacity = event.reduction/100;
+    const opacity = event.value/100;
     let end = endDate;
     if (eventSet.events.length > idx + 1) end = eventSet.events[idx+1].date;
   
@@ -52,7 +52,7 @@ const createEventBar = (eventSet, startDate, endDate, index) => {
       y0: barPosition,
       x1: end,
       y1: barPosition-barHeight,
-      fillcolor: '#A73939',
+      fillcolor: event.color,
       opacity: opacity,
       line: {
         width: 0,
@@ -101,15 +101,20 @@ function MetricsGraph(props) {
 
   let annotations = [];
   let shapes = [];
+  let barCount = 0;
+  let barIndex = 0;
 
   // create a horizontal bar graph for each event
-  const barCount = events ? events.length : 0;
-  if (barCount > 0) 
-    events.forEach((category, index) => {
-      const newBar = createEventBar(category, dailyMetrics.dates[0], dailyMetrics.dates[dailyMetrics.dates.length-1], index);
-      shapes = shapes.concat(newBar.bar);
-      annotations.push(newBar.label);
-    });
+  events?.forEach((group) => {
+    barCount += group.categories ? group.categories.length : 0;
+    if (barCount > 0) 
+      group.categories.forEach((category) => {
+        const newBar = createEventBar(category, dailyMetrics.dates[0], dailyMetrics.dates[dailyMetrics.dates.length-1], barIndex);
+        shapes = shapes.concat(newBar.bar);
+        annotations.push(newBar.label);
+        barIndex += 1;
+      });
+  });
 
   const todaymarker =
     {

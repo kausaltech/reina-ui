@@ -22,11 +22,15 @@ const categorizeMobilityEvents = (events) => {
       const categoryLabel = `${place?.choice ? place.choice.label : 'All'}${ageGroup || ''}`;
 
       editedEvents.push({
-        label: categoryLabel,
-        reduction: reduction.value,
+        category: categoryLabel,
+        label: `${categoryLabel} -${reduction.value} ${reduction.unit}`,
+        value: reduction.value,
         date: element.date,
         id: element.id,
         type: element.type,
+        color: '#990000',
+        marker: '&#x2771;',
+        markerColor: '#ffffff',
       });
 
       eventCategories.push(categoryLabel);
@@ -36,7 +40,7 @@ const categorizeMobilityEvents = (events) => {
   const uniqueCategories = Array.from(new Set(eventCategories)).sort();
   const categorizedEvents = [];
   uniqueCategories.forEach((cat) => {
-    const category = editedEvents.filter((event) => event.label === cat);
+    const category = editedEvents.filter((event) => event.category === cat);
     categorizedEvents.push({
       events: category,
       label: cat,
@@ -64,11 +68,15 @@ const categorizeMaskEvents = (events) => {
       const categoryLabel = `${place?.choice ? place.choice.label : 'All'}${ageGroup || ''}`;
 
       editedEvents.push({
-        label: categoryLabel,
+        category: categoryLabel,
+        label: `${categoryLabel} (${effect.value} ${effect.unit})`,
         value: effect.value,
         date: element.date,
         id: element.id,
         type: element.type,
+        color: '#333333',
+        marker: '&#x2771;',
+        markerColor: '#ffffff',
       });
 
       eventCategories.push(categoryLabel);
@@ -78,7 +86,7 @@ const categorizeMaskEvents = (events) => {
   const uniqueCategories = Array.from(new Set(eventCategories)).sort();
   const categorizedEvents = [];
   uniqueCategories.forEach((cat) => {
-    const category = editedEvents.filter((event) => event.label === cat);
+    const category = editedEvents.filter((event) => event.category === cat);
     categorizedEvents.push({
       events: category,
       label: cat,
@@ -105,11 +113,15 @@ const categorizeVaccinationEvents = (events) => {
       const categoryLabel = `${ageGroup || ''}`;
 
       editedEvents.push({
-        label: categoryLabel,
+        category: categoryLabel,
+        label: `${categoryLabel} (${rate.value} ${rate.unit})`,
         value: rate.value,
         date: element.date,
         id: element.id,
         type: element.type,
+        color: '#009999',
+        marker: '&#x2771;',
+        markerColor: '#ffffff',
       });
 
       eventCategories.push(categoryLabel);
@@ -119,7 +131,7 @@ const categorizeVaccinationEvents = (events) => {
   const uniqueCategories = Array.from(new Set(eventCategories)).sort();
   const categorizedEvents = [];
   uniqueCategories.forEach((cat) => {
-    const category = editedEvents.filter((event) => event.label === cat);
+    const category = editedEvents.filter((event) => event.category === cat);
     categorizedEvents.push({
       events: category,
       label: cat,
@@ -137,11 +149,13 @@ const getInfectionEvents = (events) => {
   infectionEvents.forEach((element) => {
       const amount = element.parameters.find((param) => param.id === 'amount');
       editedEvents.push({
-        label: 'New infections',
+        label: `${amount.value} ${amount.unit}`,
         amount: amount.value,
         date: element.date,
         id: element.id,
         type: element.type,
+        marker: '&#x273A;',
+        markerColor: '#33aa33',
       });
   });
 
@@ -155,34 +169,32 @@ const categorizeTestingEvents = (events) => {
     ['TEST_ALL_WITH_SYMPTOMS','TEST_ONLY_SEVERE_SYMPTOMS','TEST_WITH_CONTACT_TRACING'].includes(element.type)
     );
   const editedEvents = [];
-  const eventCategories= [];
 
   // based on its parameters create a category label for each event
   testingEvents.forEach((element) => {
-      const categoryLabel = element.description;
+      let strength = 0;
+
+      if (element.type === 'TEST_ONLY_SEVERE_SYMPTOMS') strength = element.parameters[0]?.value/2
+        else if (element.type === 'TEST_ALL_WITH_SYMPTOMS') strength = 50
+        else if (element.type === 'TEST_WITH_CONTACT_TRACING') strength = 50 + element.parameters[0]?.value/2;
 
       editedEvents.push({
-        label: categoryLabel,
-        strength: element.parameters ? element.parameters[0]?.value : 100,
+        category: element.description,
+        label: `${element.description} ${element.parameters[0]?.value} ${element.parameters[0]?.unit}`,
+        value: strength,
         date: element.date,
         id: element.id,
         type: element.type,
+        color: '#000099',
+        marker: '&#x2771;',
+        markerColor: '#ffffff',
       });
-
-      eventCategories.push(categoryLabel);
   });
 
-  // create a list of unique event categories by label
-  const uniqueCategories = Array.from(new Set(eventCategories)).sort();
-  const categorizedEvents = [];
-  uniqueCategories.forEach((cat) => {
-    const category = editedEvents.filter((event) => event.label === cat);
-    categorizedEvents.push({
-      events: category,
-      label: cat,
-    })
-  })
-  return categorizedEvents;
+  return [{
+    label: 'Testing',
+    events: editedEvents,
+  }];
 };
 
 

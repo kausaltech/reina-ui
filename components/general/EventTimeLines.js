@@ -87,7 +87,6 @@ const EventTimeLines = (props) => {
     dayCount += 1;
     dayLimit += 1;
   }
-  console.log(events);
 
   const infectionEvents = getInfectionEvents(events);
   const mobilityEvents = categorizeMobilityEvents(events);
@@ -108,6 +107,7 @@ const EventTimeLines = (props) => {
               endDate={endDate}
               events={infectionEvents ? infectionEvents : []}
               label="New infections"
+              continuous={false}
             />
           </TimeLineGroup>
         }
@@ -121,6 +121,7 @@ const EventTimeLines = (props) => {
                 events={category.events}
                 label={category.label}
                 key={category.label}
+                continuous={true}
               />
             ))}
           </TimeLineGroup>
@@ -135,6 +136,7 @@ const EventTimeLines = (props) => {
                 events={category.events}
                 label={category.label}
                 key={category.label}
+                continuous={true}
               />
             ))}
           </TimeLineGroup>
@@ -142,15 +144,13 @@ const EventTimeLines = (props) => {
         { testingEvents &&
           <TimeLineGroup>
             <TimeLineGroupHeader>Testing</TimeLineGroupHeader>
-            { testingEvents?.map((category) => (
               <TimeLine 
                 startDate={startDate}
                 endDate={endDate}
-                events={category.events}
-                label={category.label}
-                key={category.label}
+                events={testingEvents[0].events}
+                label={testingEvents[0].label}
+                continuous={true}
               />
-            ))}
           </TimeLineGroup>
         }
         { vaccinationEvents &&
@@ -163,6 +163,7 @@ const EventTimeLines = (props) => {
                 events={category.events}
                 label={category.label}
                 key={category.label}
+                continuous={true}
               />
             ))}
           </TimeLineGroup>
