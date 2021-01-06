@@ -107,7 +107,6 @@ const EventTimeLines = (props) => {
               endDate={endDate}
               events={infectionEvents ? infectionEvents : []}
               label="New infections"
-              continuous={false}
             />
           </TimeLineGroup>
         }
@@ -121,7 +120,6 @@ const EventTimeLines = (props) => {
                 events={category.events}
                 label={category.label}
                 key={category.label}
-                continuous={true}
               />
             ))}
           </TimeLineGroup>
@@ -136,7 +134,6 @@ const EventTimeLines = (props) => {
                 events={category.events}
                 label={category.label}
                 key={category.label}
-                continuous={true}
               />
             ))}
           </TimeLineGroup>
@@ -149,7 +146,6 @@ const EventTimeLines = (props) => {
                 endDate={endDate}
                 events={testingEvents[0].events}
                 label={testingEvents[0].label}
-                continuous={true}
               />
           </TimeLineGroup>
         }
@@ -163,7 +159,6 @@ const EventTimeLines = (props) => {
                 events={category.events}
                 label={category.label}
                 key={category.label}
-                continuous={true}
               />
             ))}
           </TimeLineGroup>

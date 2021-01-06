@@ -1,7 +1,12 @@
 import React from 'react';
 import { gql, useQuery } from "@apollo/client";
 import MetricsGraph from './MetricsGraph';
-import { categorizeTestingEvents, categorizeMobilityEvents } from 'common/preprocess';
+import {
+  categorizeTestingEvents,
+  categorizeMobilityEvents,
+  categorizeMaskEvents,
+  categorizeVaccinationEvents,
+  categorizeInfectionEvents, } from 'common/preprocess';
 
 const GET_ACTIVE_EVENTS = gql`
 query GetActiveInvertions {
@@ -52,13 +57,25 @@ function PopulationGraph(props) {
 
   const shownEvents = [
     {
-      label: 'Limit Mobility',
+      label: 'New infections',
+      categories: categorizeInfectionEvents(dataActive.activeEvents),
+    },
+    {
+      label: 'Limit mobility',
       categories: categorizeMobilityEvents(dataActive.activeEvents),
     },
     {
       label: 'Testing',
       categories: categorizeTestingEvents(dataActive.activeEvents),
-    }
+    },
+    {
+      label: 'Wearing masks',
+      categories: categorizeMaskEvents(dataActive.activeEvents),
+    },
+    {
+      label: 'Vaccination',
+      categories: categorizeVaccinationEvents(dataActive.activeEvents),
+    },
   ];
 
   return <MetricsGraph

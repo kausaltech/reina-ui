@@ -95,7 +95,7 @@ const Day = (props) => {
 };
 
 const TimeLine = (props) => {
-  const { startDate, endDate, events, label, continuous } = props;
+  const { startDate, endDate, events, label } = props;
 
   const startDay = dayjs(startDate);
   const endDay = dayjs(endDate);
@@ -114,7 +114,7 @@ const TimeLine = (props) => {
     const todaysEvent = events?.find((element) => element.date === dayjs(currentDay).format('YYYY-MM-DD'));
 
     if (todaysEvent) {
-      if (continuous) stateColor = todaysEvent.color;
+      if (todaysEvent.continuous) stateColor = todaysEvent.color;
       timeLineState = todaysEvent.value;
     }
 

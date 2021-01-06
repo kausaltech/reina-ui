@@ -23,6 +23,7 @@ const categorizeMobilityEvents = (events) => {
 
       editedEvents.push({
         category: categoryLabel,
+        continuous: true,
         label: `${categoryLabel} -${reduction.value} ${reduction.unit}`,
         value: reduction.value,
         date: element.date,
@@ -69,6 +70,7 @@ const categorizeMaskEvents = (events) => {
 
       editedEvents.push({
         category: categoryLabel,
+        continuous: true,
         label: `${categoryLabel} (${effect.value} ${effect.unit})`,
         value: effect.value,
         date: element.date,
@@ -114,6 +116,7 @@ const categorizeVaccinationEvents = (events) => {
 
       editedEvents.push({
         category: categoryLabel,
+        continuous: true,
         label: `${categoryLabel} (${rate.value} ${rate.unit})`,
         value: rate.value,
         date: element.date,
@@ -162,6 +165,34 @@ const getInfectionEvents = (events) => {
   return editedEvents;
 };
 
+const categorizeInfectionEvents = (events) => {
+  if(!events?.length) return null;
+
+  const infectionEvents = events.filter((element) => element.type==='IMPORT_INFECTIONS');
+  const editedEvents = [];
+
+  infectionEvents.forEach((element) => {
+      const amount = element.parameters.find((param) => param.id === 'amount');
+      editedEvents.push({
+        category: element.description,
+        continuous: false,
+        label: `${amount.value} ${amount.unit}`,
+        value: amount.value,
+        date: element.date,
+        id: element.id,
+        type: element.type,
+        color: '#33aa33',
+        marker: '&#x273A;',
+        markerColor: '#33aa33',
+      });
+  });
+
+  return [{
+    label: 'Infections',
+    events: editedEvents,
+  }];
+};
+
 const categorizeTestingEvents = (events) => {
   if(!events?.length) return null;
 
@@ -180,6 +211,7 @@ const categorizeTestingEvents = (events) => {
 
       editedEvents.push({
         category: element.description,
+        continuous: true,
         label: `${element.description} ${element.parameters[0]?.value} ${element.parameters[0]?.unit}`,
         value: strength,
         date: element.date,
@@ -204,4 +236,5 @@ export {
   categorizeTestingEvents,
   categorizeMaskEvents,
   categorizeVaccinationEvents,
+  categorizeInfectionEvents,
 };
