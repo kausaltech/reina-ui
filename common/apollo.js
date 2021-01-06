@@ -1,20 +1,22 @@
 // Copied from: https://github.com/vardhanapoorv/epl-nextjs-app/blob/main/lib/apolloClient.js
 import { useMemo } from "react";
+import getConfig from 'next/config'
 import { ApolloClient, HttpLink, InMemoryCache } from "@apollo/client";
+
+
+const { serverRuntimeConfig, publicRuntimeConfig } = getConfig()
 
 let apolloClient;
 
 function createApolloClient() {
   let ssrMode = typeof window === "undefined";
-  let uri = (ssrMode ?
-             process.env.SERVER_GRAPHQL_ENDPOINT:
-             process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT);
+  let uri = ssrMode ? serverRuntimeConfig.graphqlUrl : publicRuntimeConfig.graphqlUrl;
 
   // console.log("endpoint...", uri)
   return new ApolloClient({
     ssrMode: ssrMode,
     link: new HttpLink({
-      uri: uri || 'http://localhost:5000/graphql',
+      uri: uri,
       credentials: 'include',
     }),
     cache: new InMemoryCache({
