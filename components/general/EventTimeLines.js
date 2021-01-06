@@ -99,7 +99,7 @@ const EventTimeLines = (props) => {
       {/* extra wrapper to make container blocks stretch the full timeline, not just parent width */}
       <div>
         <Months months={monthData} />
-        { infectionEvents &&
+        { infectionEvents?.length > 0 &&
           <TimeLineGroup>
             <TimeLineGroupHeader>New infections</TimeLineGroupHeader>
             <TimeLine 
@@ -110,7 +110,7 @@ const EventTimeLines = (props) => {
             />
           </TimeLineGroup>
         }
-        { mobilityEvents &&
+        { mobilityEvents?.length > 0 &&
           <TimeLineGroup>
           <TimeLineGroupHeader>Limit mobility</TimeLineGroupHeader>
             { mobilityEvents?.map((category) => (
@@ -124,7 +124,7 @@ const EventTimeLines = (props) => {
             ))}
           </TimeLineGroup>
         }
-        { maskEvents &&
+        { maskEvents?.length > 0 &&
           <TimeLineGroup>
             <TimeLineGroupHeader>Wearing masks</TimeLineGroupHeader>
             { maskEvents?.map((category) => (
@@ -138,7 +138,7 @@ const EventTimeLines = (props) => {
             ))}
           </TimeLineGroup>
         }
-        { testingEvents &&
+        { testingEvents?.length > 0 &&
           <TimeLineGroup>
             <TimeLineGroupHeader>Testing</TimeLineGroupHeader>
               <TimeLine 
@@ -149,7 +149,7 @@ const EventTimeLines = (props) => {
               />
           </TimeLineGroup>
         }
-        { vaccinationEvents &&
+        { vaccinationEvents?.length > 0 &&
           <TimeLineGroup>
             <TimeLineGroupHeader>Vaccination</TimeLineGroupHeader>
             { vaccinationEvents?.map((category) => (

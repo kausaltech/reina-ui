@@ -1,9 +1,7 @@
 import styled from 'styled-components';
 import dayjs from 'dayjs';
-import { Link } from 'i18n';
 import { gql, useMutation } from "@apollo/client";
 import { Table, Button, UncontrolledCollapse, Spinner } from 'reactstrap';
-import DashCard from 'components/general/DashCard';
 
 const HeaderCell = styled.th`
   ${({ small }) => small && `
@@ -82,14 +80,6 @@ const DELETE_EVENT = gql`
   }
 `;
 
-const RESET_EVENTS = gql`
-  mutation ResetVariables {
-    resetVariables {
-      ok
-    }
-  }
-`;
-
 const EventRow = (props) => {
   const { event, handleDelete } = props;
 
@@ -122,13 +112,6 @@ const EventList = (props) => {
     }
   });
 
-  const [resetEvents] = useMutation(RESET_EVENTS, {
-    onCompleted({data}) {
-      updateList();
-      //console.log(`Events reseted`);
-    }
-  });
-
   const handleDelete = (id, evt) => {
     deleteEvent({variables: { id }});
   };
@@ -146,10 +129,7 @@ const EventList = (props) => {
   }
 
   return (
-    <DashCard>
-      <h3>Scenario</h3>
-      <Link href="/">See outcome</Link>
-      <Button size="sm" className="float-right mb-3" onClick={resetEvents}>Reset Scenario</Button>
+    <div>
       { loading ?
         <div className="d-flex justify-content-center align-items-center w-100 my-5"><div><Spinner type="grow" color="secondary" /></div></div>
         : (
@@ -191,7 +171,7 @@ const EventList = (props) => {
           </UncontrolledCollapse>
         </Table>
         )}
-    </DashCard>
+    </div>
   );
 };
 

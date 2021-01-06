@@ -1,21 +1,28 @@
-import {useState, useEffect} from 'react';
+import {useState} from 'react';
 import { gql, useMutation } from "@apollo/client";
 import styled from 'styled-components';
 import dayjs from 'dayjs';
 import {FormGroup, Label, Input, CustomInput, Button, FormFeedback, Spinner} from 'reactstrap';
-import { Formik, Form, useFormikContext } from 'formik';
+import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import DatePicker from 'react-datepicker';
-import DashCard from 'components/general/DashCard'
+
 
 import "react-datepicker/dist/react-datepicker.css";
 
 const FormRow = styled.div`
   display: flex;
-  margin: .5rem -.5rem;
+  margin: .5rem -.5rem 1rem;
 
   label {
     line-height: 1;
+  }
+`;
+
+const FormWrapper = styled.div`
+  width: 100%;
+  form {
+    width: 100%;
   }
 `;
 
@@ -38,9 +45,8 @@ const SubmitWrapper = styled.div`
 
 const ParametersHolder = styled.div`
   display: flex;
-  width: 100%;
   padding: .5rem .5rem 0;
-  margin: .5rem .5rem -.5rem .5rem;
+  margin: .5rem;
   border-radius: ${(props) => props.theme.cardBorderRadius};
   background-color: ${(props) => props.theme.themeColors.light};
 `;
@@ -88,82 +94,84 @@ const EventForm = (props) => {
   };
 
   return type && (
-    <Formik 
-      initialValues={initialValues}
-      validationSchema={parametersSchema}
-      onSubmit={handleSubmit}
-    >
-        {({
-         errors,
-         touched,
-         handleChange,
-         handleBlur,
-         handleSubmit,
-         isSubmitting,
-         setFieldValue,
-       }) => (
-         <Form>
-        <ParametersHolder>
-          {parameters?.map((parameter)=>(
-            <FormGroup key={parameter.id}>
-              { parameter.__typename === 'EventIntParameter' && (
-                <InputWrapper>
-                  <Label for={`${parameter.id}Field`}>
-                    { parameter.description }
-                    { parameter.required && <Required> *</Required>}
-                  </Label>
-                  <Input
-                    type="text"
-                    id={`${parameter.id}Field`}
-                    name={parameter.id}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    invalid={Boolean(errors[parameter.id])}
-                  />
-                  {errors[parameter.id] && touched[parameter.id] ? (
-                    <FormFeedback>{errors[parameter.id]}</FormFeedback>
-                  ) : null}
-                </InputWrapper>
-              )}
+    <FormWrapper>
+      <Formik 
+        initialValues={initialValues}
+        validationSchema={parametersSchema}
+        onSubmit={handleSubmit}
+      >
+          {({
+          errors,
+          touched,
+          handleChange,
+          handleBlur,
+          handleSubmit,
+          isSubmitting,
+          setFieldValue,
+        }) => (
+          <Form>
+          <ParametersHolder>
+            {parameters?.map((parameter)=>(
+              <FormGroup key={parameter.id}>
+                { parameter.__typename === 'EventIntParameter' && (
+                  <InputWrapper>
+                    <Label for={`${parameter.id}Field`}>
+                      { parameter.description }
+                      { parameter.required && <Required> *</Required>}
+                    </Label>
+                    <Input
+                      type="text"
+                      id={`${parameter.id}Field`}
+                      name={parameter.id}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      invalid={Boolean(errors[parameter.id])}
+                    />
+                    {errors[parameter.id] && touched[parameter.id] ? (
+                      <FormFeedback>{errors[parameter.id]}</FormFeedback>
+                    ) : null}
+                  </InputWrapper>
+                )}
 
-              { parameter.__typename === 'EventChoiceParameter' && (
-                <InputWrapper>
-                  <Label for={`${parameter.id}Field`}>
-                    { parameter.description }
-                    { parameter.required && <small>*</small>}
-                  </Label>
-                  <CustomInput
-                    type="select"
-                    id={`${parameter.id}Field`}
-                    name={parameter.id}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                  >
-                    <option value="">Select</option>
-                    { parameter.choices && parameter.choices.map((choice) => (
-                      <option
-                        key={choice.id}
-                        value={choice.id}
-                      >
-                          { choice.label }
-                      </option>
-                    ))}
-                  </CustomInput>
-                </InputWrapper>
-              )}
-            </FormGroup>
-          ))}
-          <SubmitWrapper>
-            <Button
-              type="submit"
-              disabled={isSubmitting}
-              color="primary"
-            >Add</Button>
-          </SubmitWrapper>
-        </ParametersHolder>
-         </Form>
-        )}
-    </Formik>
+                { parameter.__typename === 'EventChoiceParameter' && (
+                  <InputWrapper>
+                    <Label for={`${parameter.id}Field`}>
+                      { parameter.description }
+                      { parameter.required && <small>*</small>}
+                    </Label>
+                    <CustomInput
+                      type="select"
+                      id={`${parameter.id}Field`}
+                      name={parameter.id}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                    >
+                      <option value="">Select</option>
+                      { parameter.choices && parameter.choices.map((choice) => (
+                        <option
+                          key={choice.id}
+                          value={choice.id}
+                        >
+                            { choice.label }
+                        </option>
+                      ))}
+                    </CustomInput>
+                  </InputWrapper>
+                )}
+              </FormGroup>
+            ))}
+            <SubmitWrapper>
+              <Button
+                type="submit"
+                disabled={isSubmitting}
+                color="primary"
+              >Add</Button>
+            </SubmitWrapper>
+          </ParametersHolder>
+          </Form>
+          )}
+      </Formik>
+    </FormWrapper>
     )
 };
 
@@ -220,7 +228,7 @@ const AddEvent = (props) => {
   }
 
   return (
-    <DashCard className="shadow-lg">
+    <div>
       <h5>Add new event</h5>
       { loading ?
         <div className="d-flex justify-content-center align-items-center w-100 my-5"><div><Spinner type="grow" color="secondary" /></div></div>
@@ -263,7 +271,7 @@ const AddEvent = (props) => {
             </FormRow>
           </div>
         )}
-    </DashCard>
+    </div>
   );
 };
 

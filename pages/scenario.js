@@ -1,11 +1,14 @@
+import { useState } from 'react';
 import Head from 'next/head';
-import { gql, useQuery } from "@apollo/client";
+import { gql, useQuery, useMutation } from "@apollo/client";
 import { useTranslation } from '../i18n';
-import { Container, Row, Col, Spinner } from 'reactstrap';
+import { TabContent, TabPane, Nav, NavItem, NavLink, Container, Row, Col, Button } from 'reactstrap';
+import classnames from 'classnames';
 import styled from 'styled-components';
 import Layout from 'components/Layout';
 import AddEvent from 'components/content/AddEvent';
 import EventList from 'components/content/EventList';
+import ScenariosHeader from 'components/content/ScenariosHeader';
 import EventTimeLines from 'components/general/EventTimeLines';
 import DashCard from 'components/general/DashCard';
 
@@ -68,30 +71,64 @@ export default function Scenario() {
     refetch();
   };
 
+  const [activeTab, setActiveTab] = useState('1');
+
+  const toggle = tab => {
+    if(activeTab !== tab) setActiveTab(tab);
+  }
+
   return (
     <Layout>
       <Head>
-        <title>REINA - Front page</title>
+        <title>REINA - Scenario</title>
       </Head>
       <Container className="mt-4" fluid="lg">
         <Row className="mx-2">
           <Col>
-              <AddEvent
-                events={data ? data.availableEvents : []}
-                handleSuccess={updateList}
-                loading={loading}/>
-              <EventList
-                events={dataActive ? dataActive.activeEvents : []}
-                updateList={updateList}
-                loading={loadingActive}
+              <ScenariosHeader
+                handleUpdate={updateList}
               />
               <DashCard>
-                <EventTimeLines
-                  startDate="2020-03-02"
-                  endDate="2021-04-30"
-                  events={dataActive ? dataActive.activeEvents : []}
-                />
-              </DashCard>
+                <AddEvent
+                  events={data ? data.availableEvents : []}
+                  handleSuccess={updateList}
+                  loading={loading}/>
+                <h5>Active events</h5>
+                <Nav tabs>
+                  <NavItem>
+                  <NavLink
+                    className={classnames({ active: activeTab === '1' })}
+                    onClick={() => { toggle('1'); }}
+                  >
+                    List
+                  </NavLink>
+                </NavItem>
+                <NavItem>
+                  <NavLink
+                    className={classnames({ active: activeTab === '2' })}
+                    onClick={() => { toggle('2'); }}
+                  >
+                    Timeline
+                  </NavLink>
+                </NavItem>
+              </Nav>
+              <TabContent activeTab={activeTab} className="pt-3">
+                <TabPane tabId="1">
+                  <EventList
+                    events={dataActive ? dataActive.activeEvents : []}
+                    updateList={updateList}
+                    loading={loadingActive}
+                  />
+                </TabPane>
+                <TabPane tabId="2">
+                  <EventTimeLines
+                    startDate="2020-03-02"
+                    endDate="2021-04-30"
+                    events={dataActive ? dataActive.activeEvents : []}
+                  />
+                </TabPane>
+              </TabContent>
+            </DashCard>
           </Col>
         </Row>
       </Container>
