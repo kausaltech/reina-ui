@@ -121,7 +121,7 @@ function MetricsGraph(props) {
       yshift: -4,
     };
 
-    annotations.push(groupHeader);
+    if (group.categories?.length > 0) annotations.push(groupHeader);
 
     barCount += group.categories ? group.categories.length : 0;
     if (barCount > 0) 
