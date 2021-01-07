@@ -108,7 +108,7 @@ const categorizeVaccinationEvents = (events) => {
   vaccinationEvents.forEach((element) => {
       const minAge = element.parameters.find((param) => param.id === 'min_age');
       const maxAge = element.parameters.find((param) => param.id === 'max_age');
-      const rate = element.parameters.find((param) => param.id === 'daily_vaccinations');
+      const rate = element.parameters.find((param) => param.id === 'weekly_vaccinations');
 
       const ageGroup = (minAge.value !== null || maxAge.value !== null) ?
         ` (${minAge.value !== null ? minAge.value : 0}–${maxAge.value !== null ? maxAge.value : 100}-v.)` : undefined;
