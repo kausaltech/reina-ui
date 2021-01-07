@@ -52,6 +52,7 @@ function PopulationGraph(props) {
     { type: 'HOSPITALIZED' },
     { type: 'IN_ICU' },
     { type: 'DEAD' },
+    { type: 'VACCINATED', visible: 'legendonly' },
     { type: 'RECOVERED', visible: 'legendonly' },
   ]
 
