@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import dayjs from 'dayjs';
 import { gql, useMutation } from "@apollo/client";
 import { Table, Button, UncontrolledCollapse, Spinner } from 'reactstrap';
+import { useTranslation } from 'i18n';
 
 const HeaderCell = styled.th`
   ${({ small }) => small && `
@@ -103,6 +104,7 @@ const EventRow = (props) => {
 
 const EventList = (props) => {
   const { events, updateList, loading } = props;
+  const { t } = useTranslation(['common']);
   const today = new Date();
 
   const [deleteEvent] = useMutation(DELETE_EVENT, {
@@ -138,16 +140,16 @@ const EventList = (props) => {
             <tr>
               <HeaderCell small={true}></HeaderCell>
               <HeaderCell small={true}></HeaderCell>
-              <HeaderCell>Event</HeaderCell>
-              <HeaderCell>Value</HeaderCell>
-              <HeaderCell medium={true} numeric>Date</HeaderCell>
+              <HeaderCell>{ t('event') }</HeaderCell>
+              <HeaderCell>{ t('value') }</HeaderCell>
+              <HeaderCell medium={true} numeric>{ t('date') }</HeaderCell>
             </tr>
           </thead>
           <tbody>
             <tr>
               <th colSpan="2">+</th>
               <th colSpan="3" id="pastToggler">
-                <a href="#pastToggler">Past events ({ pastEvents.length })</a>
+                <a href="#pastToggler">{ t('past-events') } ({ pastEvents.length })</a>
               </th>
             </tr>
           </tbody>
@@ -160,7 +162,7 @@ const EventList = (props) => {
             <tr>
               <th colSpan="2">+</th>
               <th colSpan="3" id="futureToggler">
-                <a href="#futureToggler">Future events ({ futureEvents.length })</a>
+                <a href="#futureToggler">{ t('future-events') } ({ futureEvents.length })</a>
               </th>
             </tr>
           </tbody>

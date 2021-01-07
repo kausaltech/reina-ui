@@ -6,6 +6,7 @@ import {FormGroup, Label, Input, CustomInput, Button, FormFeedback, Spinner} fro
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import DatePicker from 'react-datepicker';
+import { useTranslation } from 'i18n';
 
 
 import "react-datepicker/dist/react-datepicker.css";
@@ -52,8 +53,8 @@ const ParametersHolder = styled.div`
 `;
 
 const EventForm = (props) => {
-
   const { type, parameters, onSubmit } = props;
+  const { t } = useTranslation(['common']);
 
   let initialValues = {}
   let parametersSchema = Yup.object().shape({});
@@ -72,11 +73,11 @@ const EventForm = (props) => {
     if(param.__typename === 'EventIntParameter') {
       const validationObject = Yup.object().shape({
         [param.id]:Yup.number()
-        .integer('Must be a round number')
+        .integer(t('must-be-integer'))
         .concat( param.required ? Yup.number().required() : null )
         .concat( param.minValue !== null ? Yup.number().min(param.minValue) : null )
         .concat( param.maxValue !== null ? Yup.number().max(param.maxValue) : null )
-        .typeError('Please type a number'),
+        .typeError(t('must-be-number')),
       });
       parametersSchema = parametersSchema.concat(validationObject);
     }
@@ -186,6 +187,7 @@ const ADD_EVENT = gql`
 
 const AddEvent = (props) => {
   const { events, handleSuccess, loading } = props;
+  const { t } = useTranslation(['common']);
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
   const [date, setDate] = useState(tomorrow);
@@ -229,7 +231,7 @@ const AddEvent = (props) => {
 
   return (
     <div>
-      <h5>Add new event</h5>
+      <h5>{ t('add-new-event') }</h5>
       { loading ?
         <div className="d-flex justify-content-center align-items-center w-100 my-5"><div><Spinner type="grow" color="secondary" /></div></div>
         : (
@@ -243,7 +245,7 @@ const AddEvent = (props) => {
                   value={activeEvent}
                   onChange={handleEventChange}
                 >
-                  <option value="">Select event</option>
+                  <option value="">{ t('select-event') }</option>
                   { events && events.map((event) => (
                     <option
                       key={event.type}

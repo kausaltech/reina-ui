@@ -1,8 +1,10 @@
 import React from 'react';
+import { useTranslation } from 'i18n';
 import MetricsGraph from './MetricsGraph';
 
 function HealthcareCapacityGraph(props) {
   const { dailyMetrics } = props;
+  const { t } = useTranslation(['common']);
 
   const shownMetrics = [
     { type: 'AVAILABLE_HOSPITAL_BEDS' },
@@ -12,7 +14,7 @@ function HealthcareCapacityGraph(props) {
     <MetricsGraph
       dailyMetrics={dailyMetrics}
       shownMetrics={shownMetrics}
-      title="Free capacity in the healthcare system" 
+      title={t('free-healthcare-capacity')} 
     />
   )   
 }

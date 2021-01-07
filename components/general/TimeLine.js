@@ -5,6 +5,7 @@ import { transparentize } from 'polished';
 import {
   UncontrolledTooltip
 } from 'reactstrap';
+import { useTranslation } from 'i18n';
 
 dayjs.extend(isToday);
 
@@ -96,12 +97,13 @@ const Day = (props) => {
 
 const TimeLine = (props) => {
   const { startDate, endDate, events, label } = props;
+  const { t } = useTranslation(['common']);
 
   const startDay = dayjs(startDate);
   const endDay = dayjs(endDate);
 
   if (!startDay.isValid() || !endDay.isValid()) {
-    return <div>ERROR</div>
+    return <div>{ t('error') }</div>
   }
 
   const timeLineData = [];

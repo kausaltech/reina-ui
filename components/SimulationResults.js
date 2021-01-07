@@ -88,10 +88,10 @@ function SimulationResults({ runId }) {
       <Row className="mx-2">
         <Col md="12">
           <DashCard>
-            <h3>Outcome</h3>
+            <h3>{ t('outcome') }</h3>
             <h5>{data.area.nameLong}</h5>
-            <div>{`Population: ${data.area.totalPopulation}`}</div>
-            <Link href="/scenario">Edit scenario events</Link>
+            <div>{`${t('population')}: ${data.area.totalPopulation}`}</div>
+            <Link href="/scenario">{ t('edit-scenario-events') }</Link>
           </DashCard>
           
         </Col>

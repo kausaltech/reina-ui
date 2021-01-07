@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import styled from 'styled-components';
 import { Nav, NavItem as BSNavItem, Button } from 'reactstrap';
-import { i18n, Link } from 'i18n';
+import { i18n, Link, useTranslation } from 'i18n';
 import { I18nContext } from 'next-i18next';
 
 const SideNav = styled.div`
@@ -64,6 +64,7 @@ const NavItem = styled(BSNavItem)`
 const SideBarNav = ({ children }) => {
 
   const { i18n: { language } } = useContext(I18nContext);
+  const { t } = useTranslation(['common']);
 
   return (
     <SideNav>
@@ -73,19 +74,19 @@ const SideBarNav = ({ children }) => {
       </SideHeader>
       <Nav vertical>
         <NavItem>
-          <Link href="/" active>Outcome</Link>
+          <Link href="/" active>{ t('outcome') }</Link>
         </NavItem>
         <NavItem>
-          <Link href="/scenario">Scenario</Link>
+          <Link href="/scenario">{ t('scenario') }</Link>
         </NavItem>
         <NavItem disabled={true}>
-          <Link href="#">Disease parameters</Link>
+          <Link href="#">{ t('disease-parameters') }</Link>
         </NavItem>
         <NavItem disabled={true}>
-          <Link href="#">Region</Link>
+          <Link href="#">{ t('region') }</Link>
         </NavItem>
         <NavItem disabled={true}>
-          <Link href="#">About REINA</Link>
+          <Link href="#">{ t('about-reina') }</Link>
         </NavItem>
       </Nav>
 

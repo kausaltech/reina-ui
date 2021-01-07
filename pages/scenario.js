@@ -1,10 +1,9 @@
 import { useState } from 'react';
 import Head from 'next/head';
 import { gql, useQuery, useMutation } from "@apollo/client";
-import { useTranslation } from '../i18n';
+import { useTranslation } from 'i18n';
 import { TabContent, TabPane, Nav, NavItem, NavLink, Container, Row, Col, Button } from 'reactstrap';
 import classnames from 'classnames';
-import styled from 'styled-components';
 import Layout from 'components/Layout';
 import AddEvent from 'components/content/AddEvent';
 import EventList from 'components/content/EventList';
@@ -93,14 +92,14 @@ export default function Scenario() {
                   events={data ? data.availableEvents : []}
                   handleSuccess={updateList}
                   loading={loading}/>
-                <h5>Active events</h5>
+                <h5>{ t('active-events') }</h5>
                 <Nav tabs>
                   <NavItem>
                   <NavLink
                     className={classnames({ active: activeTab === '1' })}
                     onClick={() => { toggle('1'); }}
                   >
-                    List
+                    { t('list') }
                   </NavLink>
                 </NavItem>
                 <NavItem>
@@ -108,7 +107,7 @@ export default function Scenario() {
                     className={classnames({ active: activeTab === '2' })}
                     onClick={() => { toggle('2'); }}
                   >
-                    Timeline
+                    { t('timeline') }
                   </NavLink>
                 </NavItem>
               </Nav>

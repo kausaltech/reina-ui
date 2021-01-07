@@ -19,7 +19,7 @@ const categorizeMobilityEvents = (events) => {
 
       const ageGroup = (minAge.value !== null || maxAge.value !== null) ?
         ` (${minAge.value !== null ? minAge.value : 0}–${maxAge.value !== null ? maxAge.value : 100}-v.)` : undefined;
-      const categoryLabel = `${place?.choice ? place.choice.label : 'All'}${ageGroup || ''}`;
+      const categoryLabel = `${place?.choice ? place.choice.label : ''}${ageGroup || ''}`;
 
       editedEvents.push({
         category: categoryLabel,
@@ -66,7 +66,7 @@ const categorizeMaskEvents = (events) => {
 
       const ageGroup = (minAge.value !== null || maxAge.value !== null) ?
         ` (${minAge.value !== null ? minAge.value : 0}–${maxAge.value !== null ? maxAge.value : 100}-v.)` : undefined;
-      const categoryLabel = `${place?.choice ? place.choice.label : 'All'}${ageGroup || ''}`;
+      const categoryLabel = `${place?.choice ? place.choice.label : ''}${ageGroup || ''}`;
 
       editedEvents.push({
         category: categoryLabel,
@@ -188,7 +188,7 @@ const categorizeInfectionEvents = (events) => {
   });
 
   return [{
-    label: 'Infections',
+    label: 'infections',
     events: editedEvents,
   }];
 };
@@ -224,7 +224,7 @@ const categorizeTestingEvents = (events) => {
   });
 
   return [{
-    label: 'Testing',
+    label: 'testing',
     events: editedEvents,
   }];
 };
