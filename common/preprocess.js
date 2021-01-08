@@ -1,7 +1,4 @@
 import dayjs from 'dayjs';
-import customParseFormat from 'dayjs/plugin/customParseFormat';
-
-dayjs.extend(customParseFormat);
 
 function getAgeGroupString(minAge, maxAge, parens=false) {
   let ageGroup;

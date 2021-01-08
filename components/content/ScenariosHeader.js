@@ -34,8 +34,9 @@ const ScenariosHeader = (props) => {
       <CustomInput
         type="select"
         id="select-scenario"
+        defaultValue="default"
       >
-        <option value="default" selected>{ t('default') }</option>
+        <option value="default">{ t('default') }</option>
       </CustomInput>
       <ButtonToolbar>
         <Button size="sm" color="danger" className="mb-3 mr-3" onClick={resetEvents}>{ t('reset') }</Button>
