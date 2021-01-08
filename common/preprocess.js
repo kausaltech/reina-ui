@@ -3,6 +3,25 @@ import customParseFormat from 'dayjs/plugin/customParseFormat';
 
 dayjs.extend(customParseFormat);
 
+function getAgeGroupString(minAge, maxAge, parens=false) {
+  let ageGroup;
+  if (minAge.value != null || maxAge.value != null) {
+    ageGroup = parens ? ' (' : '';
+    if (minAge.value != null) {
+      ageGroup += minAge.value;
+    }
+    if (maxAge.value != null) {
+      ageGroup += '–' + maxAge.value;
+    } else {
+      ageGroup += '+';
+    }
+    ageGroup += '-v.';
+    if (parens) ageGroup += ')';
+  }
+  return ageGroup;
+}
+
+
 const categorizeMobilityEvents = (events) => {
   if(!events?.length) return null;
 
@@ -16,9 +35,7 @@ const categorizeMobilityEvents = (events) => {
       const maxAge = element.parameters.find((param) => param.id === 'max_age');
       const place = element.parameters.find((param) => param.id === 'place');
       const reduction = element.parameters.find((param) => param.id === 'reduction');
-
-      const ageGroup = (minAge.value !== null || maxAge.value !== null) ?
-        ` (${minAge.value !== null ? minAge.value : 0}–${maxAge.value !== null ? maxAge.value : 100}-v.)` : undefined;
+      const ageGroup = getAgeGroupString(minAge, maxAge, true);
       const categoryLabel = `${place?.choice ? place.choice.label : ''}${ageGroup || ''}`;
 
       editedEvents.push({
@@ -64,8 +81,7 @@ const categorizeMaskEvents = (events) => {
       const place = element.parameters.find((param) => param.id === 'place');
       const effect = element.parameters.find((param) => param.id === 'share_of_contacts');
 
-      const ageGroup = (minAge.value !== null || maxAge.value !== null) ?
-        ` (${minAge.value !== null ? minAge.value : 0}–${maxAge.value !== null ? maxAge.value : 100}-v.)` : undefined;
+      const ageGroup = getAgeGroupString(minAge, maxAge, true);
       const categoryLabel = `${place?.choice ? place.choice.label : ''}${ageGroup || ''}`;
 
       editedEvents.push({
@@ -110,8 +126,7 @@ const categorizeVaccinationEvents = (events) => {
       const maxAge = element.parameters.find((param) => param.id === 'max_age');
       const rate = element.parameters.find((param) => param.id === 'weekly_vaccinations');
 
-      const ageGroup = (minAge.value !== null || maxAge.value !== null) ?
-        ` (${minAge.value !== null ? minAge.value : 0}–${maxAge.value !== null ? maxAge.value : 100}-v.)` : undefined;
+      const ageGroup = getAgeGroupString(minAge, maxAge);
       const categoryLabel = `${ageGroup || ''}`;
 
       editedEvents.push({
