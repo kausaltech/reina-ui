@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import { useState, useContext } from 'react';
 import { gql, useMutation } from "@apollo/client";
 import styled from 'styled-components';
 import dayjs from 'dayjs';
@@ -6,10 +6,13 @@ import {FormGroup, Label, Input, CustomInput, Button, FormFeedback, Spinner} fro
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import DatePicker from 'react-datepicker';
+import { registerLocale } from  "react-datepicker";
+import fi from 'date-fns/locale/fi';
 import { useTranslation } from 'i18n';
-
+import { I18nContext } from 'next-i18next';
 
 import "react-datepicker/dist/react-datepicker.css";
+registerLocale('fi', fi);
 
 const FormRow = styled.div`
   display: flex;
@@ -188,6 +191,7 @@ const ADD_EVENT = gql`
 const AddEvent = (props) => {
   const { events, handleSuccess, loading } = props;
   const { t } = useTranslation(['common']);
+  const { i18n: { language } } = useContext(I18nContext);
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
   const [date, setDate] = useState(tomorrow);
@@ -260,7 +264,8 @@ const AddEvent = (props) => {
                 <DatePicker
                   selected={date}
                   onChange={date => setDate(date)}
-                  dateFormat="dd.MM.yyyy"
+                  locale={language}
+                  dateFormat="P"
                 />
               </InputWrapper>
             </FormRow>

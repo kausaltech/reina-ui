@@ -1,7 +1,12 @@
+import { useContext } from 'react';
 import dayjs from 'dayjs';
+import 'dayjs/locale/en';
+import 'dayjs/locale/fi';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 import styled from 'styled-components';
 import { useTranslation } from 'i18n';
+import { I18nContext } from 'next-i18next';
+
 import TimeLine from 'components/general/TimeLine';
 import {
   categorizeMobilityEvents,
@@ -68,7 +73,8 @@ const Months = ({months}) => {
 const EventTimeLines = (props) => {
   const { events } = props;
   const { t } = useTranslation(['common']);
-
+  const { i18n: { language } } = useContext(I18nContext);
+  dayjs.locale(language);
   const startDate = getEarliestDate(events);
   const endDate = getLatestDate(events).add(1, 'month');
  
