@@ -33,7 +33,8 @@ const categorizeMobilityEvents = (events) => {
       const place = element.parameters.find((param) => param.id === 'place');
       const reduction = element.parameters.find((param) => param.id === 'reduction');
       const ageGroup = getAgeGroupString(minAge, maxAge, true);
-      const categoryLabel = `${place?.choice ? place.choice.label : ''}${ageGroup || ''}`;
+      // TODO: Label should be localized
+      const categoryLabel = `${place?.choice ? place.choice.label : 'Yleinen'}${ageGroup || ''}`;
 
       editedEvents.push({
         category: categoryLabel,
@@ -199,14 +200,18 @@ const categorizeInfectionEvents = (events) => {
       });
   });
 
+  // TODO: Label should be localized
   return [{
-    label: 'infections',
+    label: 'Tartunnat',
     events: editedEvents,
   }];
 };
 
-const categorizeTestingEvents = (events) => {
+const categorizeTestingEvents = (events, t) => {
   if(!events?.length) return null;
+  if (typeof t != 'function') {
+    // do something
+  }
 
   const testingEvents = events.filter((element) =>
     ['TEST_ALL_WITH_SYMPTOMS','TEST_ONLY_SEVERE_SYMPTOMS','TEST_WITH_CONTACT_TRACING'].includes(element.type)
@@ -224,7 +229,7 @@ const categorizeTestingEvents = (events) => {
       editedEvents.push({
         category: element.description,
         continuous: true,
-        label: `${element.description} ${element.parameters[0]?.value} ${element.parameters[0]?.unit}`,
+        label: `${element.description} ${element.parameters[0]?.value || ''} ${element.parameters[0]?.unit || ''}`,
         value: strength,
         date: element.date,
         id: element.id,
@@ -235,8 +240,9 @@ const categorizeTestingEvents = (events) => {
       });
   });
 
+  // TODO: Label should be localized
   return [{
-    label: 'testing',
+    label: 'Testauksen tehokkuus',
     events: editedEvents,
   }];
 };
