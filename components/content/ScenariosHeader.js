@@ -35,13 +35,10 @@ const ScenariosHeader = (props) => {
         type="select"
         id="select-scenario"
       >
-        <option value="new" disabled>Empty</option>
-        <option value="default" selected>Default</option>
+        <option value="default" selected>{ t('default') }</option>
       </CustomInput>
       <ButtonToolbar>
-        <Button size="sm" className="mb-3 mr-3" onClick={resetEvents} disabled>{ t('save') }</Button>
         <Button size="sm" color="danger" className="mb-3 mr-3" onClick={resetEvents}>{ t('reset') }</Button>
-        <Button size="sm" className="mb-3 mr-3" onClick={resetEvents} disabled>{ t('save-as') }&#8230;</Button>
       </ButtonToolbar>
     </DashCard>
   );

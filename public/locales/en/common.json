@@ -32,5 +32,6 @@
   "add-new-event": "Add new even",
   "date": "Date",
   "value": "Value",
-  "event": "Event"
+  "event": "Event",
+  "default": "Default"
 }

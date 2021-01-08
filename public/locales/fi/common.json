@@ -32,5 +32,6 @@
   "add-new-event": "Lisää tapahtuma",
   "date": "Päivä",
   "value": "Arvo",
-  "event": "Tapahtuma"
+  "event": "Tapahtuma",
+  "default": "Oletus"
 }
