@@ -8,7 +8,9 @@ import {
   getInfectionEvents,
   categorizeTestingEvents,
   categorizeMaskEvents,
-  categorizeVaccinationEvents } from 'common/preprocess';
+  categorizeVaccinationEvents,
+  getEarliestDate,
+  getLatestDate } from 'common/preprocess';
 
 dayjs.extend(isSameOrBefore);
 
@@ -64,14 +66,14 @@ const Months = ({months}) => {
 };
 
 const EventTimeLines = (props) => {
-  const { startDate, endDate, events } = props;
+  const { events } = props;
   const { t } = useTranslation(['common']);
 
-  const startDay = dayjs(startDate);
-  const endDay = dayjs(endDate);
+  const startDate = getEarliestDate(events);
+  const endDate = getLatestDate(events).add(1, 'month');
  
   const monthData = [];
-  let currentDay = dayjs(startDate);
+  let currentDay = startDate;
   let currentMonth = currentDay.format('MMM YYYY');
   let dayCount = 0;
   let dayLimit = 0;

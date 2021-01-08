@@ -121,8 +121,6 @@ export default function Scenario() {
                 </TabPane>
                 <TabPane tabId="2">
                   <EventTimeLines
-                    startDate="2020-03-02"
-                    endDate="2021-04-30"
                     events={dataActive ? dataActive.activeEvents : []}
                   />
                 </TabPane>

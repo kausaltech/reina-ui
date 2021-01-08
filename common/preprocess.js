@@ -229,6 +229,27 @@ const categorizeTestingEvents = (events) => {
   }];
 };
 
+const getEarliestDate = (events) => {
+  let earliestDate = new dayjs();
+
+  events.forEach((element) => {
+    const checkDate = dayjs(element.date);
+    if(checkDate.isBefore(earliestDate)) earliestDate = checkDate;
+  });
+
+  return earliestDate;
+};
+
+const getLatestDate = (events) => {
+  let latestDate = new dayjs();
+
+  events.forEach((element) => {
+    const checkDate = dayjs(element.date);
+    if(checkDate.isAfter(latestDate)) latestDate = checkDate;
+  });
+
+  return latestDate;
+};
 
 export {
   categorizeMobilityEvents,
@@ -237,4 +258,6 @@ export {
   categorizeMaskEvents,
   categorizeVaccinationEvents,
   categorizeInfectionEvents,
+  getEarliestDate,
+  getLatestDate,
 };
