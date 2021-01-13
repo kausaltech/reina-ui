@@ -4,6 +4,7 @@ import { gql, useQuery, useMutation } from "@apollo/client";
 import { Container, Row, Col, Spinner } from 'reactstrap';
 import DashCard from 'components/general/DashCard';
 import Updating from 'components/general/Updating';
+import ScenarioSelector from 'components/content/ScenarioSelector';
 import PopulationGraph from 'components/charts/PopulationGraph';
 import EpidemicParametersGraph from 'components/charts/EpidemicParametersGraph';
 import ValidationGraph from 'components/charts/ValidationGraph';
@@ -91,6 +92,7 @@ function SimulationResults({ runId }) {
             <h3>{ t('outcome') }</h3>
             <h5>{data.area.nameLong}</h5>
             <div>{`${t('population')}: ${data.area.totalPopulation}`}</div>
+            <ScenarioSelector />
             <Link href="/scenario">{ t('edit-scenario-events') }</Link>
           </DashCard>
           
