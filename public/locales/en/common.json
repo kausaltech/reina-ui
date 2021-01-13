@@ -33,5 +33,8 @@
   "date": "Date",
   "value": "Value",
   "event": "Event",
-  "default": "Default"
+  "default": "Default",
+  "mobility-data": "Mobility data",
+  "see-results": "See results",
+  "mobility": "Mobility"
 }

@@ -79,6 +79,9 @@ const SideBarNav = ({ children }) => {
         <NavItem>
           <Link href="/scenario">{ t('scenario') }</Link>
         </NavItem>
+        <NavItem>
+          <Link href="/mobility">{ t('mobility-data') }</Link>
+        </NavItem>
         <NavItem disabled={true}>
           <Link href="#">{ t('disease-parameters') }</Link>
         </NavItem>

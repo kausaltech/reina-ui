@@ -64,7 +64,14 @@ const createEventBar = (eventSet, startDate, endDate, index, groupIndex) => {
 };
 
 function MetricsGraph(props) {
-  const { dailyMetrics, shownMetrics, title, validationMetrics, events } = props;
+  const {
+    dailyMetrics,
+    shownMetrics,
+    title,
+    subtitle,
+    validationMetrics,
+    events,
+    showToday, } = props;
   const { metrics } = dailyMetrics;
 
   let metricsByType = new Map(metrics.map(m => [m.type, {metric: m, dates: dailyMetrics.dates}]));
@@ -155,7 +162,7 @@ function MetricsGraph(props) {
       }
     };
 
-  shapes.push(todaymarker);
+    if (showToday) shapes.push(todaymarker);
 
   const layout = {
     height: 300 + barCount * 20 + groupIndex * 25,
@@ -163,6 +170,10 @@ function MetricsGraph(props) {
       t: 24,
       r: 200,
       b: 48 + barCount * 20 + groupIndex * 24,
+    },
+    xaxis: {
+      tickformat: '%m/%Y',
+      ticklabelmode: 'period',
     },
     autosize: true,
     font: {
@@ -174,7 +185,8 @@ function MetricsGraph(props) {
 
   return (
     <div>
-      <h4>{title}</h4>
+      <h4>{ title }</h4>
+      { subtitle && <h5>{ subtitle }</h5> }
       <DynamicPlot
           data={ traces }
           layout={ layout }
@@ -184,5 +196,9 @@ function MetricsGraph(props) {
     </div>
   );
 }
+
+MetricsGraph.defaultProps = {
+  showToday: true,
+};
 
 export default MetricsGraph;
