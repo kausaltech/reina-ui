@@ -1,5 +1,6 @@
 import dynamic from 'next/dynamic';
 import dayjs from 'dayjs';
+import { useTranslation } from 'i18n';
 
 // Plotly doesn't work with SSR
 const DynamicPlot = dynamic(() => import('react-plotly.js'),
@@ -65,25 +66,28 @@ const createEventBar = (eventSet, startDate, endDate, index, groupIndex) => {
 
 function MetricsGraph(props) {
   const {
-    dailyMetrics,
     shownMetrics,
     title,
     subtitle,
+    dailyMetrics,
     validationMetrics,
     events,
     showToday, } = props;
   const { metrics } = dailyMetrics;
+  const { t } = useTranslation(['common']);
 
-  let metricsByType = new Map(metrics.map(m => [m.type, {metric: m, dates: dailyMetrics.dates}]));
+  let dailyMetricsByType = new Map(metrics.map(m => [m.type, {metric: m, dates: dailyMetrics.dates}]));
+  let validationMetricsByType;
 
   if (typeof validationMetrics !== 'undefined' && validationMetrics.metrics){
+    validationMetricsByType = new Map();
     validationMetrics.metrics.forEach((m) => {
-      metricsByType.set(m.type, {metric: m, dates: validationMetrics.dates});
+      validationMetricsByType.set(m.type, {metric: m, dates: validationMetrics.dates});
     });
   }
 
-  let traces = shownMetrics.map((m) => {
-    const metaMetric = metricsByType.get(m.type);
+  function generateTrace(m, byType) {
+    const metaMetric = byType.get(m.type);
     if (!metaMetric) {
       throw new Error(`Unsupported metric: ${m.type}`)
     }
@@ -92,6 +96,11 @@ function MetricsGraph(props) {
     const mode = metric.isSimulated ? 'lines': 'markers';
     // const unitStr = metric.unit ? ` ${metric.unit}` : '';
     const unitStr = '';
+    let name = metric.label;
+
+    if (!metric.isSimulated) {
+      name += ` (${t('historical-series')})`
+    }
 
     return {
       y: values,
@@ -102,9 +111,17 @@ function MetricsGraph(props) {
         color: metric.color,
       },
       hovertemplate: metric.isInteger ? `%{y}${unitStr}` : `%{y:.2f}${unitStr}`,
-      name: metric.label,
+      name: name,
       visible: m.visible,
     };
+  }
+
+  let traces = [];
+  shownMetrics.forEach((m) => {
+    traces.push(generateTrace(m, dailyMetricsByType));
+    if (validationMetrics) {
+      traces.push(generateTrace(m, validationMetricsByType))
+    }
   });
 
   let annotations = [];

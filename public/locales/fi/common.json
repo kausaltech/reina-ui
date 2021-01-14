@@ -14,6 +14,7 @@
   "edit-scenario-events": "Muokkaa skenaariota",
   "outcome": "Tulos",
   "validation": "Vertailu toteutumaan",
+  "historical-series": "tod.",
   "must-be-integer": "Syötä kokonaisluku",
   "must-be-number": "Syötä luku",
   "select-event": "Valitse tapahtuman tyyppi",

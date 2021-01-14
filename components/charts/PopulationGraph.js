@@ -50,7 +50,7 @@ function PopulationGraph(props) {
   const shownMetrics = [
     { type: 'SUSCEPTIBLE', visible: 'legendonly' },
     { type: 'INFECTED' },
-    { type: 'HOSPITALIZED' },
+    { type: 'IN_WARD' },
     { type: 'IN_ICU' },
     { type: 'DEAD' },
     { type: 'RECOVERED', visible: 'legendonly' },
