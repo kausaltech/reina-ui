@@ -42,5 +42,9 @@
   "error-loading-scenarios": "Virhe skenaarioiden latauksessa",
   "loading": "Ladataan",
   "custom-scenario": "Muokattu skenaario",
-  "custom-scenario-description": "Käyttäjä on muokannut valmista skenaariota"
+  "custom-scenario-description": "Käyttäjä on muokannut valmista skenaariota",
+  "covid-19-model": "COVID-19 epidemiamalli",
+  "vaccinated-per-age-group": "Rokotettu osuus väestöstä ikäryhmittäin",
+  "vaccination-coverage": "Rokotuskattavuus",
+  "total-vaccinated-age-group": "Rokotetut ikäryhmittäin"
 }

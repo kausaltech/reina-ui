@@ -222,7 +222,7 @@ function MetricsGraph(props) {
   return (
     <div>
       <h4>{ title }</h4>
-      { subtitle && <h5>{ subtitle }</h5> }
+      { subtitle && <h5 className="text-muted">{ subtitle }</h5> }
       <DynamicPlot
           data={ traces }
           layout={ layout }

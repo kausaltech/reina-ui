@@ -90,7 +90,7 @@ function SimulationResults({ runId, handleRefresh }) {
   return (
     <Container className="mt-4" fluid="lg">
       <ResultBlock finished={true}>
-        <h3>{ t('outcome') }</h3>
+        <h3>{ t('covid-19-model') }</h3>
         <h5>{area.area.nameLong}</h5>
         <div>{`${t('population')}: ${area.area.totalPopulation}`}</div>
         <hr />
