@@ -78,7 +78,7 @@ const Day = (props) => {
       placement="top"
       target={`evt-${dayEvent.id}`}
     >
-      {dayEvent.label}
+      {date.format('DD.MM.YYYY')}<br/>{dayEvent.label}
     </UncontrolledTooltip>
   };
 

@@ -77,15 +77,14 @@ const EventTimeLines = (props) => {
   dayjs.locale(language);
   const startDate = getEarliestDate(events);
   const endDate = getLatestDate(events).add(1, 'month');
- 
+  console.log(startDate.format('DD.MM.YYYY'));
   const monthData = [];
   let currentDay = startDate;
   let currentMonth = currentDay.format('MMM YYYY');
   let dayCount = 0;
-  let dayLimit = 0;
 
-  while (currentDay.isSameOrBefore(endDate) && dayLimit <= 600) {
-    if(currentDay.date() == 1 || currentDay.isSame(endDate) || dayLimit == 600) {
+  while (currentDay.isSameOrBefore(endDate)) {
+    if(dayCount > 0 && (currentDay.date() == 1 || currentDay.isSame(endDate))) {
       monthData.push({
         monthName: currentMonth,
         monthLength: dayCount,
@@ -95,7 +94,6 @@ const EventTimeLines = (props) => {
     }
     currentDay = currentDay.add(1, 'day');
     dayCount += 1;
-    dayLimit += 1;
   }
 
   const infectionEvents = getInfectionEvents(events);
