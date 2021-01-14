@@ -37,7 +37,9 @@ query GetActiveInvertions {
 function PopulationGraph(props) {
   const { dailyMetrics } = props;
   const { t } = useTranslation(['common']);
-  const { loading: loadingActive, error: errorActive, data: dataActive } = useQuery(GET_ACTIVE_EVENTS);
+  const { loading: loadingActive, error: errorActive, data: dataActive } = useQuery(GET_ACTIVE_EVENTS, {
+    fetchPolicy: "no-cache"
+  });
 
   if (loadingActive) {
     return <div>{ t('loading-events') } </div>
