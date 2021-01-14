@@ -1,4 +1,5 @@
 import { useContext } from 'react';
+import { useRouter } from 'next/router'
 import styled from 'styled-components';
 import { Nav, NavItem as BSNavItem, Button } from 'reactstrap';
 import { i18n, Link, useTranslation } from 'i18n';
@@ -44,6 +45,11 @@ const LanguageSwitch = styled.div`
 
 const NavItem = styled(BSNavItem)`
 
+  &.active > a {
+    font-weight: 700;
+    color: ${(props)=>props.theme.brandLight};
+  }
+
   > a {
     display: block;
     padding: 0.5rem 1rem;
@@ -65,6 +71,7 @@ const SideBarNav = ({ children }) => {
 
   const { i18n: { language } } = useContext(I18nContext);
   const { t } = useTranslation(['common']);
+  const router = useRouter();
 
   return (
     <SideNav>
@@ -73,23 +80,14 @@ const SideBarNav = ({ children }) => {
         <small><span className="badge badge-secondary">v2.0-dev</span></small>
       </SideHeader>
       <Nav vertical>
-        <NavItem>
-          <Link href="/" active>{ t('outcome') }</Link>
+        <NavItem active={router.pathname === '/'}>
+          <Link href="/">{ t('outcome') }</Link>
         </NavItem>
-        <NavItem>
+        <NavItem active={router.pathname === '/scenario'}>
           <Link href="/scenario">{ t('scenario') }</Link>
         </NavItem>
-        <NavItem>
+        <NavItem active={router.pathname === '/mobility'}>
           <Link href="/mobility">{ t('mobility-data') }</Link>
-        </NavItem>
-        <NavItem disabled={true}>
-          <Link href="#">{ t('disease-parameters') }</Link>
-        </NavItem>
-        <NavItem disabled={true}>
-          <Link href="#">{ t('region') }</Link>
-        </NavItem>
-        <NavItem disabled={true}>
-          <Link href="#">{ t('about-reina') }</Link>
         </NavItem>
       </Nav>
 
