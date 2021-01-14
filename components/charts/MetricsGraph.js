@@ -135,7 +135,6 @@ function MetricsGraph(props) {
   shownMetrics.forEach((meta) => {
     const metric = dailyMetricsByType.get(meta.type);
     if (meta.type == 'VACCINATED') {
-      console.log(metric);
     }
     generateTrace(metric, meta).forEach((trace) => traces.push(trace));
     if (validationMetrics) {

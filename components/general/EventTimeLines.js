@@ -77,7 +77,6 @@ const EventTimeLines = (props) => {
   dayjs.locale(language);
   const startDate = getEarliestDate(events);
   const endDate = getLatestDate(events).add(1, 'month');
-  console.log(startDate.format('DD.MM.YYYY'));
   const monthData = [];
   let currentDay = startDate;
   let currentMonth = currentDay.format('MMM YYYY');

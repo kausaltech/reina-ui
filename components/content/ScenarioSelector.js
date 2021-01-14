@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import styled from 'styled-components';
 import { i18n, Link } from 'i18n';
 import { gql, useMutation, useQuery } from "@apollo/client";
@@ -43,23 +44,29 @@ const IconRun = () => (
 );
 
 const ScenarioSelector = (props) => {
-  const { handleUpdate, edit, run } = props;
+  const { handleUpdate, edit, run, isCustomized } = props;
   const { t } = useTranslation(['common']);
   let scenarios = [];
 
-  const { loading, error, data, refetch } = useQuery(GET_SCENARIOS);
+  const { loading, error, data, refetch } = useQuery(GET_SCENARIOS, {
+    fetchPolicy: "no-cache"
+  });
   if (loading) {
     scenarios = [{ id: 'loading', label: t('loading'), description: '', active: true }];
   } else if (error) {
     scenarios = [{ id: 'error', label: '?', description: t('error-loading-scenarios'), active: true }];
   } else scenarios = JSON.parse(JSON.stringify(data.scenarios));
 
+  useEffect(() => {
+    refetch();
+  }, [isCustomized]);
+
   // JSON.parse(JSON.stringify(data.scenarios));
   let activeScenario = scenarios.find((scenario) => scenario.active);
   if (!activeScenario) {
     activeScenario= {
       id: 'custom',
-      label: t('custom-scenario'),
+      label: `* ${t('custom-scenario')}`,
       description: t('custom-scenario-description'),
       active: true,
     };

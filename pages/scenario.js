@@ -64,10 +64,14 @@ const GET_EVENTS = gql`
 export default function Scenario() {
   const { t, i18n } = useTranslation(['common']);
   const { loading, error, data } = useQuery(GET_EVENTS);
-  const { loading: loadingActive, error: errorActive, data: dataActive, refetch } = useQuery(GET_ACTIVE_EVENTS);
+  const { loading: loadingActive, error: errorActive, data: dataActive, refetch } = useQuery(GET_ACTIVE_EVENTS, {
+    fetchPolicy: "no-cache"
+  });
+  // We determine if the user has customized the event list by checking if the amount of events has changed.
+  // Not very elegant but can not think other options without fetching scenarios list here too
+  const isCustomized = dataActive?.activeEvents.length;
 
   const updateList = () => {
-    //console.log('Updating list');
     refetch();
   };
 
@@ -90,6 +94,7 @@ export default function Scenario() {
                 <ScenarioSelector
                   run
                   handleUpdate={updateList}
+                  isCustomized={isCustomized}
                 />
               </DashCard>
               <DashCard>
