@@ -14,6 +14,7 @@
   "edit-scenario-events": "Edit scenario",
   "outcome": "Outcome",
   "validation": "Validation",
+  "historical-series": "real",
   "must-be-integer": "Please provide round number",
   "must-be-number": "Please provide a number",
   "select-event": "Select event type",

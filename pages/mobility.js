@@ -30,7 +30,6 @@ export default function Mobility() {
   }
   if (error) {
     console.log(error);
-    stopPolling();
     return <div>Failed to get simulation results</div>;
   }
 

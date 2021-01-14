@@ -1,4 +1,5 @@
 import { useTranslation } from '../i18n';
+import { useContext } from 'react';
 import { i18n, Link } from 'i18n';
 import { gql, useQuery, useMutation } from "@apollo/client";
 import { Container, Row, Col, Spinner } from 'reactstrap';
@@ -9,15 +10,11 @@ import PopulationGraph from 'components/charts/PopulationGraph';
 import EpidemicParametersGraph from 'components/charts/EpidemicParametersGraph';
 import ValidationGraph from 'components/charts/ValidationGraph';
 import HealthcareCapacityGraph from 'components/charts/HealthcareCapacityGraph';
+import AreaContext from 'common/area';
 
 
 const GET_SIMULATION_RESULTS = gql`
   query GetSimulationResults($runId: ID!) {
-    area {
-      name
-      nameLong
-      totalPopulation
-    }
     simulationResults(runId: $runId) {
       finished
       predictedMetrics {
@@ -36,18 +33,6 @@ const GET_SIMULATION_RESULTS = gql`
           isInteger
           isSimulated
         }
-      }
-    }
-    validationMetrics {
-      dates
-      metrics {
-          type
-          label
-          unit
-          color
-          intValues
-          isInteger
-          isSimulated
       }
     }
   }
@@ -69,6 +54,7 @@ function ResultBlock({ finished, children }) {
 
 function SimulationResults({ runId, handleRefresh }) {
   const { t, i18n } = useTranslation(['common']);
+  const area = useContext(AreaContext);
 
   const {
     loading, error, data, startPolling, stopPolling
@@ -104,8 +90,8 @@ function SimulationResults({ runId, handleRefresh }) {
     <Container className="mt-4" fluid="lg">
       <ResultBlock finished={true}>
         <h3>{ t('outcome') }</h3>
-        <h5>{data.area.nameLong}</h5>
-        <div>{`${t('population')}: ${data.area.totalPopulation}`}</div>
+        <h5>{area.area.nameLong}</h5>
+        <div>{`${t('population')}: ${area.area.totalPopulation}`}</div>
         <hr />
         <ScenarioSelector edit handleUpdate={handleRefresh} />
       </ResultBlock>
@@ -121,7 +107,7 @@ function SimulationResults({ runId, handleRefresh }) {
       <ResultBlock finished={finished}>
         <ValidationGraph
           dailyMetrics={predictedMetrics}
-          validationMetrics={validationMetrics}
+          validationMetrics={area.validationMetrics}
         />
       </ResultBlock>
     </Container>
