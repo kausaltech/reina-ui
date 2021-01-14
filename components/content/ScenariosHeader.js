@@ -8,8 +8,8 @@ const ScenariosHeader = (props) => {
   return (
     <DashCard className="shadow-lg">
       <h3>{ t('scenario') }</h3>
-      <ScenarioSelector />
-      <Link href="/scenario">{ t('see-results') }</Link>
+      <ScenarioSelector run/>
+      
     </DashCard>
   );
 };

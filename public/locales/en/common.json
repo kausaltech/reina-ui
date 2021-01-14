@@ -36,5 +36,6 @@
   "default": "Default",
   "mobility-data": "Mobility data",
   "see-results": "See results",
-  "mobility": "Mobility"
+  "mobility": "Mobility",
+  "select-scenario": "Select scenario"
 }

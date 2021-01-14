@@ -36,5 +36,6 @@
   "default": "Oletus",
   "see-results": "Laskennan tulos",
   "mobility": "Liikkuvuus",
-  "mobility-data": "Liikkuvuusdata"
+  "mobility-data": "Liikkuvuusdata",
+  "select-scenario": "Valitse skenaario"
 }

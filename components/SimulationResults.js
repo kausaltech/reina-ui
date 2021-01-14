@@ -92,8 +92,8 @@ function SimulationResults({ runId }) {
             <h3>{ t('outcome') }</h3>
             <h5>{data.area.nameLong}</h5>
             <div>{`${t('population')}: ${data.area.totalPopulation}`}</div>
-            <ScenarioSelector />
-            <Link href="/scenario">{ t('edit-scenario-events') }</Link>
+            <hr />
+            <ScenarioSelector edit />
           </DashCard>
           
         </Col>
