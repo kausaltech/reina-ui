@@ -36,7 +36,6 @@ export default function Home() {
     return <div className="d-flex justify-content-center align-items-center vw-100 vh-100"><div><Spinner style={{ width: '3rem', height: '3rem' }} /></div></div>
   }
 
-  console.log('got data', data);
   const runId = data.runSimulation.runId;
 
   return (

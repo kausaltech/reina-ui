@@ -86,12 +86,11 @@ function MetricsGraph(props) {
     });
   }
 
-  function generateTrace(m, byType) {
-    const metaMetric = byType.get(m.type);
-    if (!metaMetric) {
-      throw new Error(`Unsupported metric: ${m.type}`)
+  function generateTrace(dailyMetric, meta) {
+    if (!dailyMetric) {
+      throw new Error(`Unsupported metric: ${meta.type}`)
     }
-    const { metric, dates } = metaMetric;
+    const { metric, dates } = dailyMetric;
     const values = metric.isInteger ? metric.intValues : metric.floatValues;
     const mode = metric.isSimulated ? 'lines': 'markers';
     // const unitStr = metric.unit ? ` ${metric.unit}` : '';
@@ -102,7 +101,23 @@ function MetricsGraph(props) {
       name += ` (${t('historical-series')})`
     }
 
-    return {
+    if (metric.categorizedIntValues) {
+      const { categories, values: catValues } = metric.categorizedIntValues;
+      const traces = categories.map((cat, idx) => {
+        const cv = catValues.map((v) => v[idx]);
+        return {
+          y: cv,
+          x: dates,
+          type: 'scatter',
+          mode: mode,
+          hovertemplate: metric.isInteger ? `%{y:g}${unitStr}` : `%{y:.2f}${unitStr}`,
+          name: cat,
+        }
+      });
+      return traces;
+    }
+
+    return [{
       y: values,
       x: dates,
       type: 'scatter',
@@ -110,17 +125,22 @@ function MetricsGraph(props) {
       marker: {
         color: metric.color,
       },
-      hovertemplate: metric.isInteger ? `%{y}${unitStr}` : `%{y:.2f}${unitStr}`,
+      hovertemplate: metric.isInteger ? `%{y:g}${unitStr}` : `%{y:.2f}${unitStr}`,
       name: name,
-      visible: m.visible,
-    };
+      visible: meta.visible,
+    }];
   }
 
   let traces = [];
-  shownMetrics.forEach((m) => {
-    traces.push(generateTrace(m, dailyMetricsByType));
+  shownMetrics.forEach((meta) => {
+    const metric = dailyMetricsByType.get(meta.type);
+    if (meta.type == 'VACCINATED') {
+      console.log(metric);
+    }
+    generateTrace(metric, meta).forEach((trace) => traces.push(trace));
     if (validationMetrics) {
-      traces.push(generateTrace(m, validationMetricsByType))
+      const validationTraces = generateTrace(validationMetricsByType.get(meta.type), meta);
+      validationTraces.forEach((trace) => traces.push(trace));
     }
   });
 

@@ -10,6 +10,7 @@ import PopulationGraph from 'components/charts/PopulationGraph';
 import EpidemicParametersGraph from 'components/charts/EpidemicParametersGraph';
 import ValidationGraph from 'components/charts/ValidationGraph';
 import HealthcareCapacityGraph from 'components/charts/HealthcareCapacityGraph';
+import VaccinationGraph from 'components/charts/VaccinationGraph';
 import AreaContext from 'common/area';
 
 
@@ -97,6 +98,9 @@ function SimulationResults({ runId, handleRefresh }) {
       </ResultBlock>
       <ResultBlock finished={finished}>
         <PopulationGraph dailyMetrics={predictedMetrics} />
+      </ResultBlock>
+      <ResultBlock finished={finished}>
+        <VaccinationGraph dailyMetrics={predictedMetrics} />
       </ResultBlock>
       <ResultBlock finished={finished}>
         <HealthcareCapacityGraph dailyMetrics={predictedMetrics} />
