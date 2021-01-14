@@ -89,6 +89,7 @@ const EventRow = (props) => {
       <TableCell><Button close onClick={(e) => handleDelete(event.id, e)}/></TableCell>
       <TableCell className={event.type}></TableCell>
       <TableCell>
+        {event.modifiedByUser && <span>*</span>}
         { event.description }
         <DisplayChoiceParameters parameters={event.parameters} />
         </TableCell>
