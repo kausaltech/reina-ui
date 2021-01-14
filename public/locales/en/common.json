@@ -37,5 +37,9 @@
   "mobility-data": "Mobility data",
   "see-results": "See results",
   "mobility": "Mobility",
-  "select-scenario": "Select scenario"
+  "select-scenario": "Select scenario",
+  "error-loading-scenarios": "Error loading scenarios",
+  "loading": "Loading",
+  "custom-scenario": "Custom scenario",
+  "custom-scenario-description": "The user has edited the predefined scenario"
 }

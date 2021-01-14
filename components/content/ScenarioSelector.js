@@ -1,7 +1,6 @@
-
 import styled from 'styled-components';
 import { i18n, Link } from 'i18n';
-import { gql, useMutation } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import { CustomInput, Label, Button } from 'reactstrap';
 import { useTranslation } from 'i18n';
 
@@ -13,6 +12,25 @@ const ButtonToolbar = styled.div`
 const RESET_EVENTS = gql`
   mutation ResetVariables {
     resetVariables {
+      ok
+    }
+  }
+`;
+
+const GET_SCENARIOS = gql`
+  query getScenarios {
+    scenarios {
+      id
+      label
+      description
+      active
+    }
+  }
+`;
+
+const CHANGE_SCENARIO = gql`
+  mutation activateScenario($scenarioId: ID!) {
+    activateScenario(scenarioId: $scenarioId) {
       ok
     }
   }
@@ -35,23 +53,56 @@ const IconRun = () => (
 const ScenarioSelector = (props) => {
   const { handleUpdate, edit, run } = props;
   const { t } = useTranslation(['common']);
+  let scenarios = [];
 
-  const [resetEvents] = useMutation(RESET_EVENTS, {
+  const { loading, error, data } = useQuery(GET_SCENARIOS);
+  if (loading) {
+    scenarios = [{ id: 'loading', label: t('loading'), description: '', active: true }];
+  } else if (error) {
+    scenarios = [{ id: 'error', label: '?', description: t('error-loading-scenarios'), active: true }];
+  } else scenarios = JSON.parse(JSON.stringify(data.scenarios));
+
+  // JSON.parse(JSON.stringify(data.scenarios));
+  let activeScenario = scenarios.find((scenario) => scenario.active);
+  if (!activeScenario) {
+    activeScenario= {
+      id: 'custom',
+      label: t('custom-scenario'),
+      description: t('custom-scenario-description'),
+      active: true,
+    };
+    scenarios.push(activeScenario);
+  };
+
+  const [activateScenario] = useMutation(CHANGE_SCENARIO, {
     onCompleted({data}) {
-      handleUpdate();
+      // handleUpdate(); Refresh parent maybe if needed? Refresh this component, load scenarios again?
     }
   });
 
+  const [resetEvents] = useMutation(RESET_EVENTS, {
+    onCompleted({data}) {
+      //handleUpdate();
+    }
+  });
+
+  const handleChange = (evt) => {
+    resetEvents();
+    activateScenario({variables: { scenarioId: evt.target.value }});
+  };
+  
   return (
     <div>
       <Label>{ t('select-scenario') }</Label>
       <CustomInput
         type="select"
         id="select-scenario"
-        defaultValue="default"
+        value={activeScenario.id}
+        onChange={handleChange}
       >
-        <option value="default">{ t('default') }</option>
+        { scenarios.map((scenario) => <option value={scenario.id} key={scenario.id}>{ scenario.label }</option> )}
       </CustomInput>
+      <small>{ activeScenario.description }</small>
       <ButtonToolbar>
         { edit &&
           <Link href="/scenario" passHref>

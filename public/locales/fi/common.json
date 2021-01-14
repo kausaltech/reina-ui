@@ -37,5 +37,9 @@
   "see-results": "Laskennan tulos",
   "mobility": "Liikkuvuus",
   "mobility-data": "Liikkuvuusdata",
-  "select-scenario": "Valitse skenaario"
+  "select-scenario": "Valitse skenaario",
+  "error-loading-scenarios": "Virhe skenaarioiden latauksessa",
+  "loading": "Ladataan",
+  "custom-scenario": "Muokattu skenaario",
+  "custom-scenario-description": "Käyttäjä on muokannut valmista skenaariota"
 }
