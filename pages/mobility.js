@@ -34,19 +34,11 @@ export default function Mobility() {
     return <div>Failed to get simulation results</div>;
   }
 
-  const mobilityMetrics = {
-    dates: data?.mobilityChangeMetrics.dates,
-    metrics: data?.mobilityChangeMetrics.metrics[0]
-  };
-
   const { mobilityChangeMetrics } = data;
-  const metrics = {};
-  metrics.dates = mobilityChangeMetrics.dates;
-  metrics.metrics = [];
 
-  const clonedMetrics = JSON.parse(JSON.stringify(mobilityChangeMetrics));
+  const metrics = JSON.parse(JSON.stringify(mobilityChangeMetrics));
 
-  clonedMetrics.metrics.forEach((element,index) => {
+  metrics.metrics.forEach((element,index) => {
     element.isInteger = element.isSimulated = true;
   });
 
@@ -57,7 +49,9 @@ export default function Mobility() {
     { type: 'TRANSIT_STATIONS_MOBILITY_CHANGE' },
     { type: 'WORKPLACES_MOBILITY_CHANGE' },
     { type: 'RESIDENTIAL_MOBILITY_CHANGE' },
-  ]
+  ];
+
+
   return (
     <Layout>
       <Head>
@@ -67,13 +61,18 @@ export default function Mobility() {
         <Row className="mx-2">
           <Col>
             <DashCard>
-              <MetricsGraph     
-                dailyMetrics={clonedMetrics}
-                shownMetrics={shownMetrics}
-                events={[]}
-                title={t('mobility')} 
-                subtitle={clonedMetrics.metrics[0].description}
-                showToday={false} />
+              <h3>{ t('mobility-data') }</h3>
+              <h5 className="mb-5">{metrics.metrics[0].description}</h5>
+              { metrics.metrics.map((metric) =>
+                <MetricsGraph     
+                  dailyMetrics={metrics}
+                  shownMetrics={[{ type: metric.type }]}
+                  events={[]}
+                  subtitle={metric.label} 
+                  showToday={false}
+                  key={metric.type}
+                />
+              )}
             </DashCard>
           </Col>
         </Row>

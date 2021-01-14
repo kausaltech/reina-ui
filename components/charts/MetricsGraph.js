@@ -172,7 +172,7 @@ function MetricsGraph(props) {
       b: 48 + barCount * 20 + groupIndex * 24,
     },
     xaxis: {
-      tickformat: '%m/%Y',
+      tickformat: '%d.%m.%Y',
       ticklabelmode: 'period',
     },
     autosize: true,
