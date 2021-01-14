@@ -44,7 +44,7 @@ export default function Home() {
       <Head>
         <title>REINA</title>
       </Head>
-      <SimulationResults runId={runId} />
+      <SimulationResults runId={runId} handleRefresh={runSimulation} />
     </Layout>
   )
 }

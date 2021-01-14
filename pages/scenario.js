@@ -7,17 +7,18 @@ import classnames from 'classnames';
 import Layout from 'components/Layout';
 import AddEvent from 'components/content/AddEvent';
 import EventList from 'components/content/EventList';
-import ScenariosHeader from 'components/content/ScenariosHeader';
+import ScenarioSelector from 'components/content/ScenarioSelector';
 import EventTimeLines from 'components/general/EventTimeLines';
 import DashCard from 'components/general/DashCard';
 
 const GET_ACTIVE_EVENTS = gql`
-  query GetActiveInvertions {
+  query GetActiveEvents {
     activeEvents {
       id
       type
       date
       description
+      modifiedByUser
       parameters {
         id
         description
@@ -84,9 +85,13 @@ export default function Scenario() {
       <Container className="mt-4" fluid="lg">
         <Row className="mx-2">
           <Col>
-              <ScenariosHeader
-                handleUpdate={updateList}
-              />
+              <DashCard className="shadow-lg">
+                <h3>{ t('scenario') }</h3>
+                <ScenarioSelector
+                  run
+                  handleUpdate={updateList}
+                />
+              </DashCard>
               <DashCard>
                 <AddEvent
                   events={data ? data.availableEvents : []}

@@ -9,14 +9,6 @@ const ButtonToolbar = styled.div`
   padding: 1rem 0;
 `;
 
-const RESET_EVENTS = gql`
-  mutation ResetVariables {
-    resetVariables {
-      ok
-    }
-  }
-`;
-
 const GET_SCENARIOS = gql`
   query getScenarios {
     scenarios {
@@ -55,7 +47,7 @@ const ScenarioSelector = (props) => {
   const { t } = useTranslation(['common']);
   let scenarios = [];
 
-  const { loading, error, data } = useQuery(GET_SCENARIOS);
+  const { loading, error, data, refetch } = useQuery(GET_SCENARIOS);
   if (loading) {
     scenarios = [{ id: 'loading', label: t('loading'), description: '', active: true }];
   } else if (error) {
@@ -76,18 +68,12 @@ const ScenarioSelector = (props) => {
 
   const [activateScenario] = useMutation(CHANGE_SCENARIO, {
     onCompleted({data}) {
-      // handleUpdate(); Refresh parent maybe if needed? Refresh this component, load scenarios again?
+      refetch();
+      handleUpdate();
     }
   });
 
-  const [resetEvents] = useMutation(RESET_EVENTS, {
-    onCompleted({data}) {
-      //handleUpdate();
-    }
-  });
-
-  const handleChange = (evt) => {
-    resetEvents();
+  const handleUserSelection = (evt) => {
     activateScenario({variables: { scenarioId: evt.target.value }});
   };
   
@@ -98,7 +84,7 @@ const ScenarioSelector = (props) => {
         type="select"
         id="select-scenario"
         value={activeScenario.id}
-        onChange={handleChange}
+        onChange={handleUserSelection}
       >
         { scenarios.map((scenario) => <option value={scenario.id} key={scenario.id}>{ scenario.label }</option> )}
       </CustomInput>
@@ -117,6 +103,10 @@ const ScenarioSelector = (props) => {
       </ButtonToolbar>
     </div>
   );
+};
+
+ScenarioSelector.defaultProps = {
+  handleUpdate: () => undefined,
 };
 
 export default ScenarioSelector;

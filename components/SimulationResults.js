@@ -67,7 +67,7 @@ function ResultBlock({ finished, children }) {
 }
 
 
-function SimulationResults({ runId }) {
+function SimulationResults({ runId, handleRefresh }) {
   const { t, i18n } = useTranslation(['common']);
 
   const {
@@ -107,7 +107,7 @@ function SimulationResults({ runId }) {
         <h5>{data.area.nameLong}</h5>
         <div>{`${t('population')}: ${data.area.totalPopulation}`}</div>
         <hr />
-        <ScenarioSelector edit />
+        <ScenarioSelector edit handleUpdate={handleRefresh} />
       </ResultBlock>
       <ResultBlock finished={finished}>
         <PopulationGraph dailyMetrics={predictedMetrics} />
