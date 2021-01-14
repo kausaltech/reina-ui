@@ -29,6 +29,10 @@ const GET_SIMULATION_RESULTS = gql`
           color
           intValues
           floatValues
+          categorizedIntValues {
+            categories
+            values
+          }
           isInteger
           isSimulated
         }
@@ -49,6 +53,18 @@ const GET_SIMULATION_RESULTS = gql`
   }
 `;
 
+
+function ResultBlock({ finished, children }) {
+  return (
+    <Row className="mx-2">
+      <Col md="12">
+        <DashCard>
+          { finished ? children : <Updating /> }
+        </DashCard>
+      </Col>
+    </Row>
+  )
+}
 
 
 function SimulationResults({ runId }) {
@@ -71,7 +87,7 @@ function SimulationResults({ runId }) {
   }
 
   const { simulationResults, validationMetrics } = data;
-  const { predictedMetrics } = simulationResults;
+  const { predictedMetrics, finished } = simulationResults;
 
   console.log("Results", simulationResults, validationMetrics)
 
@@ -79,60 +95,35 @@ function SimulationResults({ runId }) {
     return <Spinner style={{ width: '3rem', height: '3rem' }} />
   }
 
-  if (simulationResults.finished) {
+  if (finished) {
     console.log('simulation run done, stop polling');
     stopPolling();
   }
 
   return (
     <Container className="mt-4" fluid="lg">
-      <Row className="mx-2">
-        <Col md="12">
-          <DashCard>
-            <h3>{ t('outcome') }</h3>
-            <h5>{data.area.nameLong}</h5>
-            <div>{`${t('population')}: ${data.area.totalPopulation}`}</div>
-            <hr />
-            <ScenarioSelector edit />
-          </DashCard>
-          
-        </Col>
-      </Row>
-      <Row className="mx-2">
-        <Col md="12">
-          <DashCard>
-            { !simulationResults.finished && <Updating /> }
-            <PopulationGraph dailyMetrics={predictedMetrics} />
-          </DashCard>
-        </Col>
-      </Row>
-      <Row className="mx-2">
-        <Col md="12">
-          <DashCard>
-            { !simulationResults.finished && <Updating /> }
-            <HealthcareCapacityGraph dailyMetrics={predictedMetrics} />
-          </DashCard>
-        </Col>
-      </Row>
-      <Row className="mx-2">
-        <Col md="12">
-          <DashCard>
-            { !simulationResults.finished && <Updating /> }
-            <EpidemicParametersGraph dailyMetrics={predictedMetrics} />
-          </DashCard>
-        </Col>
-      </Row>
-      <Row className="mx-2">
-        <Col md="12">
-          <DashCard>
-            { !simulationResults.finished && <Updating /> }
-            <ValidationGraph
-              dailyMetrics={predictedMetrics}
-              validationMetrics={validationMetrics}
-            />
-          </DashCard>
-        </Col>
-      </Row>
+      <ResultBlock finished={true}>
+        <h3>{ t('outcome') }</h3>
+        <h5>{data.area.nameLong}</h5>
+        <div>{`${t('population')}: ${data.area.totalPopulation}`}</div>
+        <hr />
+        <ScenarioSelector edit />
+      </ResultBlock>
+      <ResultBlock finished={finished}>
+        <PopulationGraph dailyMetrics={predictedMetrics} />
+      </ResultBlock>
+      <ResultBlock finished={finished}>
+        <HealthcareCapacityGraph dailyMetrics={predictedMetrics} />
+      </ResultBlock>
+      <ResultBlock finished={finished}>
+        <EpidemicParametersGraph dailyMetrics={predictedMetrics} />
+      </ResultBlock>
+      <ResultBlock finished={finished}>
+        <ValidationGraph
+          dailyMetrics={predictedMetrics}
+          validationMetrics={validationMetrics}
+        />
+      </ResultBlock>
     </Container>
   )
 }
