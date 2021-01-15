@@ -46,6 +46,8 @@ function VaccinationGraph(props) {
     if (hasAllTotals) {
       title = t('vaccination-coverage');
       subtitle = t('vaccinated-per-age-group');
+      vaccinationMetrics[0].isInteger = false;
+      vaccinationMetrics[0].unit = '%';
     };
   }
 
@@ -55,7 +57,7 @@ function VaccinationGraph(props) {
   };
 
   const shownMetrics = [
-    { type: 'VACCINATED' },
+    { type: 'VACCINATED', yAxisLabel: '% ikäryhmästä' },
   ]
 
   return <MetricsGraph
@@ -63,6 +65,7 @@ function VaccinationGraph(props) {
     shownMetrics={shownMetrics}
     title={title}
     subtitle={subtitle}
+    yAxisLabel='% ikäryhmästä'
   />
 }
 

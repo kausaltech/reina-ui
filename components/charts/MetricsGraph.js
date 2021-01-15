@@ -72,7 +72,9 @@ function MetricsGraph(props) {
     dailyMetrics,
     validationMetrics,
     events,
-    showToday, } = props;
+    showToday,
+    yAxisLabel
+  } = props;
   const { metrics } = dailyMetrics;
   const { t } = useTranslation(['common']);
 
@@ -93,8 +95,7 @@ function MetricsGraph(props) {
     const { metric, dates } = dailyMetric;
     const values = metric.isInteger ? metric.intValues : metric.floatValues;
     const mode = metric.isSimulated ? 'lines': 'markers';
-    // const unitStr = metric.unit ? ` ${metric.unit}` : '';
-    const unitStr = '';
+    const unitStr = metric.unit == '%' ? ` ${metric.unit}` : '';
     let name = metric.label;
 
     if (!metric.isSimulated) {
@@ -103,6 +104,8 @@ function MetricsGraph(props) {
 
     if (metric.categorizedIntValues) {
       const { categories, values: catValues } = metric.categorizedIntValues;
+      console.log('here');
+      console.log(metric);
       const traces = categories.map((cat, idx) => {
         const cv = catValues.map((v) => v[idx]);
         return {
@@ -211,6 +214,11 @@ function MetricsGraph(props) {
     xaxis: {
       tickformat: '%d.%m.%Y',
       ticklabelmode: 'period',
+    },
+    yaxis: {
+      title: {
+        text: yAxisLabel || undefined,
+      },
     },
     yaxis2: {
       overlaying: 'y',

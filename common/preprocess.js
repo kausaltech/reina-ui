@@ -131,7 +131,7 @@ const categorizeVaccinationEvents = (events) => {
         category: categoryLabel,
         continuous: true,
         label: `${categoryLabel} (${rate.value} ${rate.unit})`,
-        value: rate.value,
+        value: rate.value / 2000.0 * 100,
         date: element.date,
         id: element.id,
         type: element.type,
