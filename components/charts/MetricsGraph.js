@@ -128,14 +128,15 @@ function MetricsGraph(props) {
       hovertemplate: metric.isInteger ? `%{y:g}${unitStr}` : `%{y:.2f}${unitStr}`,
       name: name,
       visible: meta.visible,
+      yaxis: meta.rightY ? 'y2' : undefined,
     }];
   }
 
+  let hasRightY = false;
   let traces = [];
   shownMetrics.forEach((meta) => {
+    if (meta.rightY) hasRightY = true
     const metric = dailyMetricsByType.get(meta.type);
-    if (meta.type == 'VACCINATED') {
-    }
     generateTrace(metric, meta).forEach((trace) => traces.push(trace));
     if (validationMetrics) {
       const validationTraces = generateTrace(validationMetricsByType.get(meta.type), meta);
@@ -210,6 +211,10 @@ function MetricsGraph(props) {
     xaxis: {
       tickformat: '%d.%m.%Y',
       ticklabelmode: 'period',
+    },
+    yaxis2: {
+      overlaying: 'y',
+      side: 'right'
     },
     autosize: true,
     font: {

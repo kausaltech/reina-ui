@@ -12,9 +12,9 @@ function ValidationGraph(props) {
 
   const shownMetrics = [
     { type: 'ALL_DETECTED' },
-    { type: 'IN_WARD' },
-    { type: 'IN_ICU' },
-    { type: 'DEAD' },
+    { type: 'IN_WARD', rightY: true },
+    { type: 'IN_ICU', rightY: true },
+    { type: 'DEAD', rightY: true },
   ]
   return <MetricsGraph dailyMetrics={dailyMetrics}
             shownMetrics={shownMetrics}
