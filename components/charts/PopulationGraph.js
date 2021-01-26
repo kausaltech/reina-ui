@@ -53,9 +53,9 @@ function PopulationGraph(props) {
     { type: 'SUSCEPTIBLE', visible: 'legendonly' },
     { type: 'DETECTED', visible: 'legendonly', },
     { type: 'NEW_INFECTIONS' },
-    { type: 'IN_WARD' },
-    { type: 'IN_ICU' },
-    { type: 'DEAD' },
+    { type: 'IN_WARD', visible: 'legendonly' },
+    { type: 'IN_ICU', visible: 'legendonly' },
+    { type: 'DEAD', visible: 'legendonly' },
     { type: 'RECOVERED', visible: 'legendonly' },
   ]
 
