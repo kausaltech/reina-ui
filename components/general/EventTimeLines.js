@@ -7,10 +7,12 @@ import styled from 'styled-components';
 import { useTranslation } from 'i18n';
 import { I18nContext } from 'next-i18next';
 
+import AreaContext from 'common/area';
 import TimeLine from 'components/general/TimeLine';
 import {
   categorizeMobilityEvents,
   getInfectionEvents,
+  categorizeWeeklyInfectionEvents,
   categorizeTestingEvents,
   categorizeMaskEvents,
   categorizeVaccinationEvents,
@@ -73,6 +75,7 @@ const Months = ({months}) => {
 const EventTimeLines = (props) => {
   const { events } = props;
   const { t } = useTranslation(['common']);
+  const area = useContext(AreaContext);
   const { i18n: { language } } = useContext(I18nContext);
   dayjs.locale(language);
   const startDate = getEarliestDate(events);
@@ -96,6 +99,7 @@ const EventTimeLines = (props) => {
   }
 
   const infectionEvents = getInfectionEvents(events);
+  const infectionEventsWeekly = categorizeWeeklyInfectionEvents(events, area.area.totalPopulation);
   const mobilityEvents = categorizeMobilityEvents(events);
   const testingEvents = categorizeTestingEvents(events);
   const maskEvents = categorizeMaskEvents(events);
@@ -106,13 +110,13 @@ const EventTimeLines = (props) => {
       {/* extra wrapper to make container blocks stretch the full timeline, not just parent width */}
       <div>
         <Months months={monthData} />
-        { infectionEvents?.length > 0 &&
+        { infectionEventsWeekly?.length > 0 &&
           <TimeLineGroup>
             <TimeLineGroupHeader>{ t('new-infections') }</TimeLineGroupHeader>
             <TimeLine 
               startDate={startDate}
               endDate={endDate}
-              events={infectionEvents ? infectionEvents : []}
+              events={infectionEventsWeekly ? infectionEventsWeekly : []}
               label={t('new-infections')}
             />
           </TimeLineGroup>

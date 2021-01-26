@@ -207,6 +207,37 @@ const categorizeInfectionEvents = (events) => {
   }];
 };
 
+const categorizeWeeklyInfectionEvents = (events, population) => {
+  if(!events?.length) return null;
+
+  const infectionEvents = events.filter((element) => element.type==='IMPORT_INFECTIONS_WEEKLY');
+  const editedEvents = [];
+
+  infectionEvents.forEach((element) => {
+      const amount = element.parameters.find((param) => param.id === 'weekly_amount');
+      const portionInfected = amount.value/population * 100;
+      const proportionalValue = portionInfected < 0.1 ? portionInfected * 1000 : 100;
+      editedEvents.push({
+        category: element.description,
+        continuous: true,
+        label: `${amount.value} ${amount.unit}`,
+        value: proportionalValue,
+        date: element.date,
+        id: element.id,
+        type: element.type,
+        color: '#33aa33',
+        marker: '&#x273A;',
+        markerColor: '#33aa33',
+      });
+  });
+  console.log(editedEvents);
+  // TODO: Label should be localized
+  return [{
+    label: 'Uusia infektioita',
+    events: editedEvents,
+  }];
+};
+
 const categorizeTestingEvents = (events, t) => {
   if(!events?.length) return null;
   if (typeof t != 'function') {
@@ -276,6 +307,7 @@ export {
   categorizeMaskEvents,
   categorizeVaccinationEvents,
   categorizeInfectionEvents,
+  categorizeWeeklyInfectionEvents,
   getEarliestDate,
   getLatestDate,
 };

@@ -1,13 +1,15 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { gql, useQuery } from "@apollo/client";
 import { useTranslation } from 'i18n';
 import MetricsGraph from './MetricsGraph';
+import AreaContext from 'common/area';
 import {
   categorizeTestingEvents,
   categorizeMobilityEvents,
   categorizeMaskEvents,
   categorizeVaccinationEvents,
-  categorizeInfectionEvents, } from 'common/preprocess';
+  categorizeInfectionEvents,
+  categorizeWeeklyInfectionEvents, } from 'common/preprocess';
 
 const GET_ACTIVE_EVENTS = gql`
 query GetActiveInvertions {
@@ -37,6 +39,7 @@ query GetActiveInvertions {
 function PopulationGraph(props) {
   const { dailyMetrics } = props;
   const { t } = useTranslation(['common']);
+  const area = useContext(AreaContext);
   const { loading: loadingActive, error: errorActive, data: dataActive } = useQuery(GET_ACTIVE_EVENTS, {
     fetchPolicy: "no-cache"
   });
@@ -62,7 +65,7 @@ function PopulationGraph(props) {
   const shownEvents = [
     {
       label: t('new-infections'),
-      categories: categorizeInfectionEvents(dataActive.activeEvents),
+      categories: categorizeWeeklyInfectionEvents(dataActive.activeEvents, area.area.totalPopulation),
     },
     {
       label: t('limit-mobility'),
