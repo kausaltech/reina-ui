@@ -230,7 +230,7 @@ const categorizeWeeklyInfectionEvents = (events, population) => {
         markerColor: '#33aa33',
       });
   });
-  console.log(editedEvents);
+
   // TODO: Label should be localized
   return [{
     label: 'Uusia infektioita',

@@ -110,13 +110,13 @@ const EventTimeLines = (props) => {
       {/* extra wrapper to make container blocks stretch the full timeline, not just parent width */}
       <div>
         <Months months={monthData} />
-        { infectionEventsWeekly?.length > 0 &&
+        { infectionEventsWeekly &&
           <TimeLineGroup>
             <TimeLineGroupHeader>{ t('new-infections') }</TimeLineGroupHeader>
             <TimeLine 
               startDate={startDate}
               endDate={endDate}
-              events={infectionEventsWeekly ? infectionEventsWeekly : []}
+              events={infectionEventsWeekly[0].events}
               label={t('new-infections')}
             />
           </TimeLineGroup>

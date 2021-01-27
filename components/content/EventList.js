@@ -17,12 +17,12 @@ const HeaderCell = styled.th`
 `;
 
 const TableCell = styled.td`
-  &.IMPORT_INFECTIONS {
+  &.IMPORT_INFECTIONS, &.IMPORT_INFECTIONS_WEEKLY {
     color: ${(props) => props.theme.themeColors.white};
     background-color: ${(props) => props.theme.graphColors.red070};
   }
 
-  &.TEST_ALL_WITH_SYMPTOMS, &.TEST_ONLY_SEVERE_SYMPTOMS, &.TEST_WITH_CONTACT_TRACING {
+  &.TEST_ALL_WITH_SYMPTOMS, &.TEST_ONLY_SEVERE_SYMPTOMS, &.TEST_WITH_CONTACT_TRACING, &.WEAR_MASKS {
     background-color: ${(props) => props.theme.graphColors.blue010};
   }
 
@@ -32,6 +32,10 @@ const TableCell = styled.td`
 
   &.BUILD_NEW_ICU_UNITS, &.BUILD_NEW_HOSPITAL_BEDS  {
     background-color: ${(props) => props.theme.graphColors.blue030};
+  }
+
+  &.VACCINATE {
+    background-color: ${(props) => props.theme.graphColors.green010};
   }
 
   ${({ numeric }) => numeric && `
