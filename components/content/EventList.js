@@ -90,7 +90,7 @@ const EventRow = (props) => {
 
   return (
     <tr>
-      <TableCell><Button close onClick={(e) => handleDelete(event.id, e)}/></TableCell>
+      <TableCell>{event.modifiable && (<Button close onClick={(e) => handleDelete(event.id, e)}/>)}</TableCell>
       <TableCell className={event.type}></TableCell>
       <TableCell>
         {event.modifiedByUser && <span>*</span>}

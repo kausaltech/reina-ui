@@ -18,6 +18,7 @@ const GET_ACTIVE_EVENTS = gql`
       type
       date
       description
+      modifiable
       modifiedByUser
       parameters {
         id
