@@ -253,9 +253,9 @@ const categorizeTestingEvents = (events, t) => {
   testingEvents.forEach((element) => {
       let strength = 0;
 
-      if (element.type === 'TEST_ONLY_SEVERE_SYMPTOMS') strength = element.parameters[0]?.value/2
-        else if (element.type === 'TEST_ALL_WITH_SYMPTOMS') strength = 50
-        else if (element.type === 'TEST_WITH_CONTACT_TRACING') strength = 50 + element.parameters[0]?.value/2;
+      if (element.type === 'TEST_ONLY_SEVERE_SYMPTOMS') strength = element.parameters[0]?.value/4
+        else if (element.type === 'TEST_ALL_WITH_SYMPTOMS') strength = 20
+        else if (element.type === 'TEST_WITH_CONTACT_TRACING') strength = 20 + element.parameters[0]?.value * (4/5);
 
       editedEvents.push({
         category: element.description,
