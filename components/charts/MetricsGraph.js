@@ -104,8 +104,6 @@ function MetricsGraph(props) {
 
     if (metric.categorizedIntValues) {
       const { categories, values: catValues } = metric.categorizedIntValues;
-      console.log('here');
-      console.log(metric);
       const traces = categories.map((cat, idx) => {
         const cv = catValues.map((v) => v[idx]);
         return {
